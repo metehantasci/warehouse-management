@@ -1,0 +1,257 @@
+﻿<section class="page">
+
+  <section class="hero">
+
+    <div>
+
+      <span class="eyebrow">
+        ANALİZ & KARAR DESTEK
+      </span>
+
+      <h2>
+        Raporlar
+      </h2>
+
+      <p>
+        Raporlar doğrudan gerçek MockDbService
+        koleksiyonlarından hesaplanır.
+      </p>
+
+    </div>
+
+
+    <button
+      class="primary"
+      type="button"
+      (click)="report.reload()">
+
+      Yenile
+
+    </button>
+
+  </section>
+
+
+  @if (report.loading()) {
+
+    <div class="loading">
+      Raporlar hazırlanıyor...
+    </div>
+  }
+
+
+  @if (report.error()) {
+
+    <div class="error">
+      {{ report.error() }}
+    </div>
+  }
+
+
+  @if (
+    !report.loading()
+    &&
+    !report.error()
+  ) {
+
+    <section class="stats">
+
+      <article class="stat">
+
+        <span>
+          Toplam Stok
+        </span>
+
+        <strong>
+          {{
+            formatNumber(
+              report.totalStockQuantity()
+            )
+          }}
+        </strong>
+
+      </article>
+
+
+      <article class="stat">
+
+        <span>
+          Depo
+        </span>
+
+        <strong>
+          {{ report.warehouseStock().length }}
+        </strong>
+
+      </article>
+
+
+      <article class="stat">
+
+        <span>
+          Ürün
+        </span>
+
+        <strong>
+          {{ report.productStock().length }}
+        </strong>
+
+      </article>
+
+
+      <article class="stat">
+
+        <span>
+          Hareket Tipi
+        </span>
+
+        <strong>
+          {{ report.movementTypes().length }}
+        </strong>
+
+      </article>
+
+    </section>
+
+
+    <section class="panel">
+
+      <div class="panel-head">
+
+        <h3>
+          Depo Bazlı Stok
+        </h3>
+
+        <span>
+          {{ report.warehouseStock().length }}
+          depo
+        </span>
+
+      </div>
+
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Depo Kodu</th>
+              <th>Depo</th>
+              <th>Toplam Miktar</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              item of report.warehouseStock();
+              track item.warehouseId
+            ) {
+
+              <tr>
+
+                <td>
+                  <strong>
+                    {{ item.warehouseCode }}
+                  </strong>
+                </td>
+
+                <td>
+                  {{ item.warehouseName }}
+                </td>
+
+                <td>
+                  {{
+                    formatNumber(
+                      item.totalQuantity
+                    )
+                  }}
+                </td>
+
+              </tr>
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <section class="panel">
+
+      <div class="panel-head">
+
+        <h3>
+          Ürün Bazlı Stok
+        </h3>
+
+        <span>
+          {{ report.productStock().length }}
+          ürün
+        </span>
+
+      </div>
+
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Ürün Kodu</th>
+              <th>Ürün</th>
+              <th>Toplam Miktar</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              item of report.productStock();
+              track item.productId
+            ) {
+
+              <tr>
+
+                <td>
+                  <strong>
+                    {{ item.productCode }}
+                  </strong>
+                </td>
+
+                <td>
+                  {{ item.productName }}
+                </td>
+
+                <td>
+                  {{
+                    formatNumber(
+                      item.totalQuantity
+                    )
+                  }}
+                </td>
+
+              </tr>
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+  }
+
+</section>

@@ -1,0 +1,93 @@
+@if (dialog.state().isOpen) {
+  <button
+    type="button"
+    class="dialog-backdrop"
+    aria-label="Pencereyi kapat"
+    (click)="dialog.cancel()">
+  </button>
+
+  <section
+    class="dialog-card"
+    [class.variant-danger]="
+      dialog.state().variant
+      === 'danger'
+    "
+    [class.variant-info]="
+      dialog.state().variant
+      === 'info'
+    "
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="
+      dialog.state().title
+    ">
+
+    <div class="dialog-icon">
+      {{
+        dialog.state().variant
+          === 'danger'
+          ? '!'
+          : (
+              dialog.state().variant
+                === 'info'
+                ? 'i'
+                : '?'
+            )
+      }}
+    </div>
+
+    <div class="dialog-copy">
+      <span class="dialog-kicker">
+        ONAY GEREKLİ
+      </span>
+
+      <h2>
+        {{ dialog.state().title }}
+      </h2>
+
+      <p>
+        {{ dialog.state().message }}
+      </p>
+    </div>
+
+    @if (
+      dialog.state().mode
+      === 'prompt'
+    ) {
+      <label class="prompt-field">
+        <span>
+          {{ dialog.state().inputLabel }}
+        </span>
+
+        <input
+          type="text"
+          [value]="
+            dialog.state().inputValue
+          "
+          [placeholder]="
+            dialog.state()
+              .inputPlaceholder
+          "
+          (input)="onInput($event)">
+      </label>
+    }
+
+    <div class="dialog-actions">
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="dialog.cancel()">
+        {{ dialog.state().cancelText }}
+      </button>
+
+      <button
+        type="button"
+        class="confirm-button"
+        [disabled]="confirmDisabled()"
+        (click)="dialog.accept()">
+        {{ dialog.state().confirmText }}
+      </button>
+    </div>
+
+  </section>
+}

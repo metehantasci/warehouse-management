@@ -1,0 +1,145 @@
+<section class="form-page">
+  <a
+    class="back"
+    routerLink="/transferler">
+    ← Transferlere Dön
+  </a>
+
+  <section class="form-hero">
+    <span class="eyebrow">
+      DEPOLAR ARASI LOJİSTİK
+    </span>
+
+    <h1>
+      Yeni Transfer
+    </h1>
+
+    <p>
+      Ürünü bir depodan başka bir depoya transfer et.
+    </p>
+  </section>
+
+  @if (facade.loading()) {
+    <div class="state-box">
+      Form verileri yükleniyor...
+    </div>
+  }
+
+  @if (
+    facade.error()
+    ||
+    submitError
+  ) {
+    <div class="state-box error">
+      {{
+        submitError
+        ?? facade.error()
+      }}
+    </div>
+  }
+
+  @if (!facade.loading()) {
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <div class="form-grid">
+        <label class="full">
+          <span>Ürün *</span>
+
+          <select
+            formControlName="productId">
+
+            @for (
+              item of facade.products();
+              track item.id
+            ) {
+              <option [value]="item.id">
+                {{ item.code }} - {{ item.name }}
+              </option>
+            }
+
+          </select>
+        </label>
+
+        <label>
+          <span>Kaynak Depo *</span>
+
+          <select
+            formControlName="sourceWarehouseId">
+
+            @for (
+              item of facade.warehouses();
+              track item.id
+            ) {
+              <option [value]="item.id">
+                {{ item.code }} - {{ item.name }}
+              </option>
+            }
+
+          </select>
+        </label>
+
+        <label>
+          <span>Hedef Depo *</span>
+
+          <select
+            formControlName="destinationWarehouseId">
+
+            @for (
+              item of facade.warehouses();
+              track item.id
+            ) {
+              <option [value]="item.id">
+                {{ item.code }} - {{ item.name }}
+              </option>
+            }
+
+          </select>
+        </label>
+
+        <label>
+          <span>Miktar *</span>
+
+          <input
+            type="number"
+            formControlName="quantity"
+            min="1">
+        </label>
+
+        <label class="full">
+          <span>Not</span>
+
+          <textarea
+            formControlName="note"
+            rows="5">
+          </textarea>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <a
+          class="secondary-button"
+          routerLink="/transferler">
+          Vazgeç
+        </a>
+
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="
+            saving
+            ||
+            form.invalid
+          ">
+          {{
+            saving
+              ? 'Kaydediliyor...'
+              : 'Transferi Oluştur'
+          }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

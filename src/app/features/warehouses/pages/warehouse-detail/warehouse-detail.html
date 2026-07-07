@@ -1,0 +1,63 @@
+<section class="detail-page">
+  <a class="back" routerLink="/depolar">← Depolara Dön</a>
+
+  @if (loading()) {
+    <div class="state-box">Depo yükleniyor...</div>
+  }
+
+  @if (error()) {
+    <div class="state-box error">{{ error() }}</div>
+  }
+
+  @if (warehouse(); as item) {
+    <section class="detail-hero">
+      <span class="eyebrow">{{ item.code }}</span>
+      <h1>{{ item.name }}</h1>
+      <p>{{ item.address }}</p>
+    </section>
+
+    <section class="detail-grid">
+      <article class="detail-card">
+        <span>Şehir</span>
+        <strong>{{ item.city }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>İlçe</span>
+        <strong>{{ item.district ?? '-' }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Kapasite</span>
+        <strong>{{ formatNumber(item.capacity ?? 0) }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Sorumlu Personel</span>
+        <strong>{{ item.responsiblePerson ?? '-' }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Telefon</span>
+        <strong>{{ item.phone ?? '-' }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Durum</span>
+        <strong
+          [class.success-text]="item.isActive"
+          [class.danger-text]="!item.isActive">
+          {{ item.isActive ? 'Aktif' : 'Pasif' }}
+        </strong>
+      </article>
+    </section>
+
+    <div class="detail-actions">
+      <a
+        class="primary-button"
+        [routerLink]="['/depolar', item.id, 'edit']">
+        Depoyu Düzenle
+      </a>
+    </div>
+  }
+</section>

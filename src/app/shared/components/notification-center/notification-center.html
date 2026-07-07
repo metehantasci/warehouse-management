@@ -1,0 +1,283 @@
+<div class="notification-center">
+
+  <button
+    type="button"
+    class="notification-trigger"
+    [class.has-unread]="
+      notification.hasUnread()
+    "
+    [attr.aria-expanded]="panelOpen()"
+    aria-label="Bildirim merkezini aç"
+    title="Bildirimler"
+    (click)="togglePanel()">
+
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true">
+
+      <path
+        d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
+
+    </svg>
+
+    @if (notification.hasUnread()) {
+
+      <span class="unread-dot"></span>
+
+      <span class="unread-count">
+        {{
+          notification.unreadCount() > 99
+            ? '99+'
+            : notification.unreadCount()
+        }}
+      </span>
+    }
+
+  </button>
+
+
+  @if (panelOpen()) {
+
+    <button
+      type="button"
+      class="panel-backdrop"
+      aria-label="Bildirim merkezini kapat"
+      (click)="closePanel()">
+    </button>
+
+
+    <aside
+      class="notification-panel"
+      aria-label="Bildirim merkezi">
+
+      <header class="panel-header">
+
+        <div>
+          <span class="panel-kicker">
+            BİLDİRİM MERKEZİ
+          </span>
+
+          <h2>
+            Bildirimler
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          class="close-button"
+          aria-label="Kapat"
+          (click)="closePanel()">
+
+          ×
+
+        </button>
+
+      </header>
+
+
+      <div class="panel-toolbar">
+
+        <span>
+          {{
+            notification.unreadCount()
+          }}
+          okunmamış
+        </span>
+
+        <div class="toolbar-actions">
+
+          <button
+            type="button"
+            [disabled]="
+              !notification.hasUnread()
+            "
+            (click)="markAllRead()">
+
+            Tümünü okundu yap
+
+          </button>
+
+          <button
+            type="button"
+            class="clear-button"
+            [disabled]="
+              visibleItems().length === 0
+            "
+            (click)="clearAll()">
+
+            Temizle
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="notification-list">
+
+        @for (
+          item of visibleItems();
+          track item.id
+        ) {
+
+          <article
+            class="notification-item"
+            [class.unread]="!item.read"
+            [class.type-error]="
+              item.type === 'error'
+            "
+            [class.type-warning]="
+              item.type === 'warning'
+            "
+            [class.type-success]="
+              item.type === 'success'
+            "
+            [class.type-info]="
+              item.type === 'info'
+            "
+            (click)="markRead(item)">
+
+            <span
+              class="item-icon"
+              [attr.data-type]="item.type">
+
+              {{ iconFor(item.type) }}
+
+            </span>
+
+
+            <div class="item-copy">
+
+              <div class="item-title-row">
+
+                <strong>
+                  {{ item.title }}
+                </strong>
+
+                @if (!item.read) {
+                  <span class="new-label">
+                    YENİ
+                  </span>
+                }
+
+              </div>
+
+              <p>
+                {{ item.message }}
+              </p>
+
+              <small>
+                {{ timeAgo(item.createdAt) }}
+              </small>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="remove-button"
+              aria-label="Bildirimi sil"
+              (click)="
+                removeItem(
+                  $event,
+                  item.id
+                )
+              ">
+
+              ×
+
+            </button>
+
+          </article>
+        }
+
+
+        @if (
+          visibleItems().length === 0
+        ) {
+
+          <div class="empty-state">
+
+            <span class="empty-icon">
+              ✓
+            </span>
+
+            <strong>
+              Her şey sakin
+            </strong>
+
+            <p>
+              Henüz görüntülenecek bir bildirim yok.
+            </p>
+
+          </div>
+        }
+
+      </div>
+
+    </aside>
+  }
+
+</div>
+
+
+<div
+  class="toast-stack"
+  aria-live="polite">
+
+  @for (
+    toast of notification.toasts();
+    track toast.id
+  ) {
+
+    <article
+      class="toast"
+      [class.type-error]="
+        toast.type === 'error'
+      "
+      [class.type-warning]="
+        toast.type === 'warning'
+      "
+      [class.type-success]="
+        toast.type === 'success'
+      "
+      [class.type-info]="
+        toast.type === 'info'
+      ">
+
+      <span
+        class="toast-icon"
+        [attr.data-type]="toast.type">
+
+        {{ iconFor(toast.type) }}
+
+      </span>
+
+
+      <div class="toast-copy">
+
+        <strong>
+          {{ toast.title }}
+        </strong>
+
+        <p>
+          {{ toast.message }}
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        aria-label="Bildirimi kapat"
+        (click)="dismissToast(toast.id)">
+
+        ×
+
+      </button>
+
+    </article>
+  }
+
+</div>

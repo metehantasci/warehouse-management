@@ -1,0 +1,200 @@
+<section class="page">
+
+  <section class="hero">
+
+    <div>
+
+      <span class="eyebrow">
+        STOK RİSK ANALİZİ
+      </span>
+
+      <h2>
+        Kritik Stok
+      </h2>
+
+      <p>
+        Hesaplanan gerçek stok bakiyeleri
+        ve minimum eşikler.
+      </p>
+
+    </div>
+
+
+    <button
+      class="primary"
+      type="button"
+      (click)="load()">
+
+      Yenile
+
+    </button>
+
+  </section>
+
+
+  <section class="stats">
+
+    <article class="stat">
+
+      <span>
+        Riskli Kayıt
+      </span>
+
+      <strong>
+        {{ items().length }}
+      </strong>
+
+    </article>
+
+
+    <article class="stat">
+
+      <span>
+        Kritik
+      </span>
+
+      <strong>
+        {{ criticalCount() }}
+      </strong>
+
+    </article>
+
+
+    <article class="stat">
+
+      <span>
+        Tükendi
+      </span>
+
+      <strong>
+        {{ outCount() }}
+      </strong>
+
+    </article>
+
+
+    <article class="stat">
+
+      <span>
+        Filtre Sonucu
+      </span>
+
+      <strong>
+        {{ filtered().length }}
+      </strong>
+
+    </article>
+
+  </section>
+
+
+  <section class="toolbar">
+
+    <input
+      type="text"
+      [value]="search()"
+      (input)="onSearch($event)">
+
+  </section>
+
+
+  @if (loading()) {
+
+    <div class="loading">
+      Kritik stok hesaplanıyor...
+    </div>
+  }
+
+
+  @if (error()) {
+
+    <div class="error">
+      {{ error() }}
+    </div>
+  }
+
+
+  @if (
+    !loading()
+    &&
+    !error()
+  ) {
+
+    <section class="cards">
+
+      @for (
+        item of filtered();
+        track item.productId
+          + item.warehouseId
+      ) {
+
+        <article class="card">
+
+          <span
+            class="badge"
+            [class.red]="
+              item.status ===
+              'OUT_OF_STOCK'
+            "
+            [class.orange]="
+              item.status ===
+              'CRITICAL'
+            ">
+
+            {{
+              statusLabel(
+                item.status
+              )
+            }}
+
+          </span>
+
+
+          <h3>
+            {{ item.productName }}
+          </h3>
+
+
+          <p>
+            {{ item.productCode }}
+            •
+            {{ item.warehouseName }}
+          </p>
+
+
+          <div class="card-meta">
+
+            <div>
+
+              <span>
+                Mevcut
+              </span>
+
+              <strong>
+                {{ item.quantity }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Minimum
+              </span>
+
+              <strong>
+                {{ item.minQuantity }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </article>
+      }
+
+    </section>
+  }
+
+</section>

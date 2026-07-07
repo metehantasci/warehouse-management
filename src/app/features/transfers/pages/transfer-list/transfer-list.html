@@ -1,0 +1,210 @@
+<section class="page">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">
+        DEPOLAR ARASI LOJİSTİK
+      </span>
+
+      <h2>Transferler</h2>
+
+      <p>
+        Transfer talepleri gerçek API verisinden gelir; bekleyen kayıtlar yetkili kullanıcı tarafından yönetilir.
+      </p>
+    </div>
+
+    <a
+      *appPermission="[
+        'DEPO_SORUMLUSU',
+        'OPERASYON_YONETICISI'
+      ]"
+      class="primary"
+      routerLink="yeni">
+      + Yeni Transfer
+    </a>
+  </section>
+
+  <section class="stats">
+    <article class="stat">
+      <span>Toplam</span>
+      <strong>{{ transfers().length }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Bekliyor</span>
+      <strong>{{ countStatus('PENDING') }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Onaylandı</span>
+      <strong>{{ countStatus('APPROVED') }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>İptal</span>
+      <strong>{{ countStatus('CANCELLED') }}</strong>
+    </article>
+  </section>
+
+  <section class="toolbar">
+    <input
+      type="text"
+      [value]="search()"
+      (input)="onSearch($event)">
+
+    <select
+      [value]="selectedStatus()"
+      (change)="onStatus($event)">
+      <option value="Tümü">
+        Tüm Durumlar
+      </option>
+      <option value="PENDING">
+        Bekliyor
+      </option>
+      <option value="APPROVED">
+        Onaylandı
+      </option>
+      <option value="CANCELLED">
+        İptal
+      </option>
+    </select>
+
+    <button
+      type="button"
+      (click)="load()">
+      Yenile
+    </button>
+  </section>
+
+  @if (loading()) {
+    <div class="loading">
+      Transferler yükleniyor...
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error">
+      {{ error() }}
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length === 0
+  ) {
+    <div class="empty">
+      <strong>Transfer bulunamadı</strong>
+      <p>
+        Arama veya durum filtresini değiştirin.
+      </p>
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length > 0
+  ) {
+    <section class="cards">
+      @for (
+        transfer of filtered();
+        track transfer.id
+      ) {
+        <article class="card">
+          <span
+            class="badge"
+            [class.green]="
+              transfer.status
+              === 'APPROVED'
+            "
+            [class.red]="
+              transfer.status
+              === 'CANCELLED'
+            ">
+            {{
+              statusLabel(
+                transfer.status
+              )
+            }}
+          </span>
+
+          <h3>
+            {{
+              productName(
+                transfer.productId
+              )
+            }}
+          </h3>
+
+          <p>
+            {{
+              warehouseName(
+                transfer.sourceWarehouseId
+              )
+            }}
+            →
+            {{
+              warehouseName(
+                transfer.destinationWarehouseId
+              )
+            }}
+          </p>
+
+          <div class="card-meta">
+            <div>
+              <span>Miktar</span>
+              <strong>
+                {{ transfer.quantity }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Talep Tarihi</span>
+              <strong>
+                {{ transfer.requestedAt }}
+              </strong>
+            </div>
+          </div>
+
+          <div
+            class="row-actions"
+            style="margin-top: 13px">
+
+            <a [routerLink]="[transfer.id]">
+              Detay
+            </a>
+
+            @if (
+              transfer.status
+              === 'PENDING'
+            ) {
+              <button
+                *appPermission="[
+                  'OPERASYON_YONETICISI'
+                ]"
+                class="success"
+                type="button"
+                (click)="approve(transfer.id)">
+                Onayla
+              </button>
+
+              <button
+                *appPermission="[
+                  'OPERASYON_YONETICISI'
+                ]"
+                class="danger"
+                type="button"
+                (click)="cancel(transfer.id)">
+                İptal
+              </button>
+            }
+          </div>
+        </article>
+      }
+    </section>
+  }
+</section>

@@ -1,0 +1,66 @@
+<header class="app-header">
+
+  <div class="header-left">
+
+    <button
+      type="button"
+      class="mobile-menu-button"
+      aria-label="Menüyü aç veya kapat"
+      (click)="toggleMenu()">
+
+      ☰
+
+    </button>
+
+
+    <div class="title-block">
+
+      <span class="header-kicker">
+        YÖNETİM PANELİ
+      </span>
+
+      <strong>
+        Depo Yönetim Sistemi
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div class="header-actions">
+
+    <app-notification-center>
+    </app-notification-center>
+
+
+    <span class="header-divider"></span>
+
+
+    <div class="user-copy">
+
+      <strong>
+        {{
+          auth.currentUser()?.fullName
+          ?? 'Kullanıcı'
+        }}
+      </strong>
+
+      <span>
+        {{ roleLabel() }}
+      </span>
+
+    </div>
+
+
+    <div
+      class="user-avatar"
+      aria-hidden="true">
+
+      {{ initials() }}
+
+    </div>
+
+  </div>
+
+</header>

@@ -1,0 +1,163 @@
+﻿<aside
+  class="sidebar"
+  [class.open]="open">
+
+  <div class="brand">
+
+    <div class="brand-icon">
+      W
+    </div>
+
+
+    <div class="brand-copy">
+
+      <strong>
+        WMS Panel
+      </strong>
+
+      <span>
+        Depo Yönetimi
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="sidebar-scroll">
+
+    <section class="menu-section">
+
+      <span class="section-title">
+        ANA MENÜ
+      </span>
+
+
+      <nav class="menu-list">
+
+        @for (
+          item of mainItems;
+          track item.route
+        ) {
+
+          <a
+            class="menu-item"
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{
+              exact: item.route === '/dashboard'
+            }"
+            (click)="close()">
+
+            <span class="menu-icon">
+              {{ item.icon }}
+            </span>
+
+            <span class="menu-label">
+              {{ item.label }}
+            </span>
+
+          </a>
+        }
+
+      </nav>
+
+    </section>
+
+
+    <section class="menu-section">
+
+      <span class="section-title">
+        ANALİZ & KONTROL
+      </span>
+
+
+      <nav class="menu-list">
+
+        @for (
+          item of analysisItems;
+          track item.route
+        ) {
+
+          <a
+            class="menu-item"
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            (click)="close()">
+
+            <span class="menu-icon">
+              {{ item.icon }}
+            </span>
+
+            <span class="menu-label">
+              {{ item.label }}
+            </span>
+
+          </a>
+        }
+
+
+        @if (canSeeAuditLog) {
+
+          <a
+            class="menu-item"
+            routerLink="/audit-log"
+            routerLinkActive="active"
+            (click)="close()">
+
+            <span class="menu-icon">
+              ≡
+            </span>
+
+            <span class="menu-label">
+              Audit Log
+            </span>
+
+          </a>
+        }
+
+      </nav>
+
+    </section>
+
+  </div>
+
+
+  <div class="sidebar-user">
+
+    <div class="avatar">
+
+      {{
+        auth.currentUser()
+          ?.fullName
+          ?.charAt(0)
+          ?.toUpperCase()
+        ?? 'U'
+      }}
+
+    </div>
+
+
+    <div class="user-copy">
+
+      <strong>
+        {{
+          auth.currentUser()
+            ?.fullName
+          ?? 'Kullanıcı'
+        }}
+      </strong>
+
+      <span>
+        {{
+          auth.currentUser()
+            ?.role
+          ?? 'Rol yok'
+        }}
+      </span>
+
+    </div>
+
+  </div>
+
+</aside>

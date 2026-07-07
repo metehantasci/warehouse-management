@@ -1,0 +1,3 @@
+<section class="panel"><header><div><span>HAREKET GEÇMİŞİ</span><h2>Ürün Timeline</h2></div><small>{{movements.length}} hareket</small></header>
+@if(movements.length===0){<div class="empty-state">Bu ürüne ait stok hareketi bulunamadı.</div>}
+<div class="timeline">@for(m of movements;track m.id){<article><i></i><div><div class="top"><strong>{{label(m.type)}}</strong><span>{{m.createdAt}}</span></div><p>{{m.reason}}</p><small>Depo: {{m.warehouseId}} · Miktar: {{m.quantity}} · Bakiye: {{m.previousBalance}} → {{m.newBalance}}</small></div></article>}</div></section>

@@ -1,0 +1,226 @@
+<section class="page">
+
+  <section class="hero">
+
+    <div>
+
+      <span class="eyebrow">
+        GÜVENLİK & İZLENEBİLİRLİK
+      </span>
+
+      <h2>
+        Audit Log
+      </h2>
+
+      <p>
+        Ürün, depo, stok, transfer ve sevkiyat
+        işlemlerinin gerçek sistem geçmişi.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="primary"
+      (click)="load()">
+
+      Yenile
+
+    </button>
+
+  </section>
+
+
+  <section class="stats">
+
+    <article class="stat">
+
+      <span>
+        Toplam Kayıt
+      </span>
+
+      <strong>
+        {{ entries().length }}
+      </strong>
+
+    </article>
+
+
+    <article class="stat">
+
+      <span>
+        Filtre Sonucu
+      </span>
+
+      <strong>
+        {{ filtered().length }}
+      </strong>
+
+    </article>
+
+
+    <article class="stat">
+
+      <span>
+        Kullanıcı
+      </span>
+
+      <strong>
+        {{ userCount() }}
+      </strong>
+
+    </article>
+
+
+    <article class="stat">
+
+      <span>
+        Varlık Tipi
+      </span>
+
+      <strong>
+        {{ entityTypeCount() }}
+      </strong>
+
+    </article>
+
+  </section>
+
+
+  <section class="toolbar">
+
+    <input
+      type="text"
+      [value]="search()"
+      (input)="onSearch($event)">
+
+
+    <select
+      [value]="selectedAction()"
+      (change)="onAction($event)">
+
+      <option value="Tümü">
+        Tüm İşlemler
+      </option>
+
+
+      @for (
+        action of actions;
+        track action
+      ) {
+
+        <option [value]="action">
+          {{ action }}
+        </option>
+      }
+
+    </select>
+
+  </section>
+
+
+  <section class="panel">
+
+    <div class="panel-header">
+
+      <h3>
+        Sistem İşlem Geçmişi
+      </h3>
+
+      <span>
+        {{ filtered().length }}
+        kayıt
+      </span>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Tarih</th>
+            <th>Kullanıcı</th>
+            <th>Rol</th>
+            <th>İşlem</th>
+            <th>Varlık</th>
+            <th>Açıklama</th>
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          @for (
+            entry of filtered();
+            track entry.id
+          ) {
+
+            <tr>
+
+              <td>
+                {{ entry.timestamp }}
+              </td>
+
+
+              <td>
+
+                <strong>
+                  {{ entry.userName }}
+                </strong>
+
+              </td>
+
+
+              <td>
+                {{ entry.userRole }}
+              </td>
+
+
+              <td>
+
+                <span class="badge">
+                  {{ entry.action }}
+                </span>
+
+              </td>
+
+
+              <td>
+                {{ entry.entityType }}
+                /
+                {{ entry.entityId }}
+              </td>
+
+
+              <td>
+                {{ entry.description }}
+              </td>
+
+            </tr>
+          }
+
+        </tbody>
+
+      </table>
+
+
+      @if (
+        filtered().length === 0
+      ) {
+
+        <div class="empty">
+          Audit kaydı bulunamadı.
+        </div>
+      }
+
+    </div>
+
+  </section>
+
+</section>

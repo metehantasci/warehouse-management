@@ -1,0 +1,322 @@
+﻿import {
+  Component,
+  computed,
+  signal
+} from '@angular/core';
+
+
+type MovementType =
+  'Giriş'
+  | 'Çıkış'
+  | 'Transfer';
+
+
+interface StockMovement {
+
+  id: number;
+
+  product: string;
+
+  sku: string;
+
+  type: MovementType;
+
+  quantity: number;
+
+  warehouse: string;
+
+  user: string;
+
+  date: string;
+
+  note: string;
+}
+
+
+@Component({
+  selector: 'app-stock-movements',
+  standalone: true,
+
+  imports: [],
+
+  templateUrl: './stock-movement-detail.html',
+  styleUrl: './stock-movement-detail.scss'
+})
+export class StockMovementDetail {
+
+  readonly searchTerm =
+    signal('');
+
+
+  readonly selectedType =
+    signal('Tümü');
+
+
+  readonly selectedWarehouse =
+    signal('Tümü');
+
+
+  readonly movements:
+    StockMovement[] = [
+
+      {
+        id: 1,
+        product: 'Samsung 27" Odyssey G5',
+        sku: 'URN-1048',
+        type: 'Giriş',
+        quantity: 24,
+        warehouse: 'Ankara Merkez',
+        user: 'Metehan Taşcı',
+        date: '06.07.2026 18:42',
+        note: 'Tedarikçi teslimatı'
+      },
+
+      {
+        id: 2,
+        product: 'Logitech MX Master 3S',
+        sku: 'URN-0872',
+        type: 'Çıkış',
+        quantity: 8,
+        warehouse: 'İstanbul Avrupa',
+        user: 'Selin Kaya',
+        date: '06.07.2026 17:15',
+        note: 'Müşteri siparişi'
+      },
+
+      {
+        id: 3,
+        product: 'Lenovo ThinkPad E16',
+        sku: 'URN-1194',
+        type: 'Transfer',
+        quantity: 12,
+        warehouse: 'İzmir Bölge',
+        user: 'Murat Demir',
+        date: '06.07.2026 16:40',
+        note: 'Depolar arası transfer'
+      },
+
+      {
+        id: 4,
+        product: 'Kingston NV3 1TB SSD',
+        sku: 'URN-0631',
+        type: 'Giriş',
+        quantity: 40,
+        warehouse: 'Ankara Merkez',
+        user: 'Ece Arslan',
+        date: '06.07.2026 14:22',
+        note: 'Yeni parti kabulü'
+      },
+
+      {
+        id: 5,
+        product: 'Apple Magic Keyboard',
+        sku: 'URN-0945',
+        type: 'Çıkış',
+        quantity: 6,
+        warehouse: 'İstanbul Anadolu',
+        user: 'Burak Şahin',
+        date: '06.07.2026 12:08',
+        note: 'Kurumsal sipariş'
+      },
+
+      {
+        id: 6,
+        product: 'TP-Link Archer AX55',
+        sku: 'URN-0574',
+        type: 'Transfer',
+        quantity: 10,
+        warehouse: 'Bursa Dağıtım',
+        user: 'Ahmet Yılmaz',
+        date: '05.07.2026 19:34',
+        note: 'Stok dengeleme'
+      },
+
+      {
+        id: 7,
+        product: 'HyperX Cloud III',
+        sku: 'URN-0811',
+        type: 'Çıkış',
+        quantity: 14,
+        warehouse: 'Ankara Merkez',
+        user: 'Metehan Taşcı',
+        date: '05.07.2026 16:10',
+        note: 'E-ticaret sevkiyatı'
+      },
+
+      {
+        id: 8,
+        product: 'AMD Ryzen 7 9700X',
+        sku: 'URN-1310',
+        type: 'Giriş',
+        quantity: 18,
+        warehouse: 'İstanbul Avrupa',
+        user: 'Selin Kaya',
+        date: '05.07.2026 10:45',
+        note: 'Satın alma kabulü'
+      }
+    ];
+
+
+  readonly warehouses =
+    computed(() => [
+
+      'Tümü',
+
+      ...Array.from(
+        new Set(
+          this.movements.map(
+            movement =>
+              movement.warehouse
+          )
+        )
+      )
+    ]);
+
+
+  readonly filteredMovements =
+    computed(() => {
+
+      const search =
+        this.searchTerm()
+          .trim()
+          .toLocaleLowerCase('tr-TR');
+
+
+      return this.movements.filter(
+        movement => {
+
+          const matchesSearch =
+            !search
+            ||
+            movement.product
+              .toLocaleLowerCase('tr-TR')
+              .includes(search)
+            ||
+            movement.sku
+              .toLocaleLowerCase('tr-TR')
+              .includes(search)
+            ||
+            movement.user
+              .toLocaleLowerCase('tr-TR')
+              .includes(search);
+
+
+          const matchesType =
+            this.selectedType() === 'Tümü'
+            ||
+            movement.type ===
+              this.selectedType();
+
+
+          const matchesWarehouse =
+            this.selectedWarehouse() === 'Tümü'
+            ||
+            movement.warehouse ===
+              this.selectedWarehouse();
+
+
+          return (
+            matchesSearch
+            &&
+            matchesType
+            &&
+            matchesWarehouse
+          );
+        }
+      );
+    });
+
+
+  readonly entryTotal =
+    computed(() =>
+      this.movements
+        .filter(
+          movement =>
+            movement.type === 'Giriş'
+        )
+        .reduce(
+          (total, movement) =>
+            total + movement.quantity,
+          0
+        )
+    );
+
+
+  readonly exitTotal =
+    computed(() =>
+      this.movements
+        .filter(
+          movement =>
+            movement.type === 'Çıkış'
+        )
+        .reduce(
+          (total, movement) =>
+            total + movement.quantity,
+          0
+        )
+    );
+
+
+  readonly transferTotal =
+    computed(() =>
+      this.movements
+        .filter(
+          movement =>
+            movement.type === 'Transfer'
+        )
+        .reduce(
+          (total, movement) =>
+            total + movement.quantity,
+          0
+        )
+    );
+
+
+  onSearch(
+    event: Event
+  ): void {
+
+    this.searchTerm.set(
+      (
+        event.target
+        as HTMLInputElement
+      ).value
+    );
+  }
+
+
+  onTypeChange(
+    event: Event
+  ): void {
+
+    this.selectedType.set(
+      (
+        event.target
+        as HTMLSelectElement
+      ).value
+    );
+  }
+
+
+  onWarehouseChange(
+    event: Event
+  ): void {
+
+    this.selectedWarehouse.set(
+      (
+        event.target
+        as HTMLSelectElement
+      ).value
+    );
+  }
+
+
+  clearFilters(): void {
+
+    this.searchTerm.set('');
+
+    this.selectedType.set('Tümü');
+
+    this.selectedWarehouse.set('Tümü');
+  }
+}

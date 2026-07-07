@@ -1,0 +1,5 @@
+<section class="panel"><header><div><span>DEPO BAZLI BAKİYE</span><h2>Stok Dağılımı</h2></div><small>{{ rows.length }} depo</small></header>
+@if(rows.length===0){<div class="empty-state">Depo bakiyesi bulunamadı.</div>}
+@if(rows.length>0){<div class="table-wrap"><table><thead><tr><th>Depo Kodu</th><th>Depo</th><th>Şehir</th><th>Mevcut Bakiye</th><th>Son Hareket</th></tr></thead><tbody>
+@for(row of rows;track row.warehouseId){<tr><td><strong>{{row.warehouseCode}}</strong></td><td>{{row.warehouseName}}</td><td>{{row.city}}</td><td><b [class.zero]="row.quantity===0">{{formatNumber(row.quantity)}}</b></td><td>{{row.lastMovementAt??'-'}}</td></tr>}
+</tbody></table></div>}</section>

@@ -1,0 +1,87 @@
+:host {
+  display: block;
+}
+
+.user-switcher {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1500;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  min-width: 330px;
+  padding: 11px 12px;
+
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 14px;
+
+  box-shadow:
+    0 18px 45px
+    rgba(15, 23, 42, 0.28);
+
+  backdrop-filter: blur(12px);
+}
+
+.switcher-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.switcher-copy span {
+  color: #60a5fa;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.switcher-copy strong {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+select {
+  max-width: 185px;
+  height: 36px;
+  padding: 0 10px;
+
+  color: #e2e8f0;
+  font-size: 8px;
+  font-weight: 700;
+
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 9px;
+
+  outline: none;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: #60a5fa;
+  box-shadow:
+    0 0 0 3px
+    rgba(96, 165, 250, 0.14);
+}
+
+@media (max-width: 700px) {
+  .user-switcher {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    min-width: 0;
+  }
+
+  select {
+    max-width: 50%;
+  }
+}

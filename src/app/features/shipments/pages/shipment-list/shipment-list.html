@@ -1,0 +1,294 @@
+<section class="page">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">
+        DAÄITIM OPERASYONU
+      </span>
+
+      <h2>Sevkiyatlar</h2>
+
+      <p>
+        Sevkiyatlar mock API üzerinden yönetilir; planlama, onay, yola çıkarma ve teslim akışı aktiftir.
+      </p>
+    </div>
+
+    <a
+      *appPermission="[
+        'DEPO_SORUMLUSU',
+        'OPERASYON_YONETICISI'
+      ]"
+      class="primary"
+      routerLink="yeni">
+      + Yeni Sevkiyat
+    </a>
+  </section>
+
+  <section class="stats">
+    <article class="stat">
+      <span>Toplam</span>
+      <strong>{{ shipments().length }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Planlandı</span>
+      <strong>{{ countStatus('PLANNED') }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Yolda</span>
+      <strong>{{ countStatus('SHIPPED') }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Teslim</span>
+      <strong>{{ countStatus('DELIVERED') }}</strong>
+    </article>
+  </section>
+
+  <section class="toolbar">
+    <input
+      type="text"
+      [value]="search()"
+      (input)="onSearch($event)">
+
+    <select
+      [value]="selectedStatus()"
+      (change)="onStatus($event)">
+      <option value="Tümü">
+        Tüm Durumlar
+      </option>
+      <option value="PLANNED">
+        Planlandı
+      </option>
+      <option value="CONFIRMED">
+        Onaylandı
+      </option>
+      <option value="SHIPPED">
+        Yola Çıktı
+      </option>
+      <option value="DELIVERED">
+        Teslim Edildi
+      </option>
+      <option value="CANCELLED">
+        İptal
+      </option>
+    </select>
+
+    <button
+      type="button"
+      (click)="load()">
+      Yenile
+    </button>
+  </section>
+
+  @if (loading()) {
+    <div class="loading">
+      Sevkiyatlar yükleniyor...
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error">
+      {{ error() }}
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length === 0
+  ) {
+    <div class="empty">
+      <strong>Sevkiyat bulunamadı</strong>
+      <p>
+        Arama veya durum filtresini değiştirin.
+      </p>
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length > 0
+  ) {
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Sevkiyat Takibi</h3>
+        <span>
+          {{ filtered().length }} kayıt
+        </span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Kod</th>
+              <th>Kaynak Depo</th>
+              <th>Hedef</th>
+              <th>Ürün Kalemi</th>
+              <th>Planlanan</th>
+              <th>Durum</th>
+              <th>İşlemler</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (
+              shipment of filtered();
+              track shipment.id
+            ) {
+              <tr>
+                <td>
+                  <strong>
+                    {{ shipment.code }}
+                  </strong>
+                </td>
+
+                <td>
+                  {{
+                    warehouseName(
+                      shipment.sourceWarehouseId
+                    )
+                  }}
+                </td>
+
+                <td>
+                  {{ shipment.destinationName }}
+                </td>
+
+                <td>
+                  {{ shipment.items.length }}
+                </td>
+
+                <td>
+                  {{ shipment.plannedDate }}
+                </td>
+
+                <td>
+                  <span
+                    class="badge"
+                    [class.green]="
+                      shipment.status
+                      === 'DELIVERED'
+                    "
+                    [class.red]="
+                      shipment.status
+                      === 'CANCELLED'
+                    "
+                    [class.orange]="
+                      shipment.status
+                      === 'SHIPPED'
+                    ">
+                    {{
+                      statusLabel(
+                        shipment.status
+                      )
+                    }}
+                  </span>
+                </td>
+
+                <td>
+                  <div class="row-actions">
+                    <a
+                      [routerLink]="[
+                        shipment.id
+                      ]">
+                      Detay
+                    </a>
+
+                    @if (
+                      shipment.status
+                      === 'PLANNED'
+                    ) {
+                      <button
+                        *appPermission="[
+                          'OPERASYON_YONETICISI'
+                        ]"
+                        class="success"
+                        type="button"
+                        (click)="
+                          runAction(
+                            shipment.id,
+                            'confirm'
+                          )
+                        ">
+                        Onayla
+                      </button>
+                    }
+
+                    @if (
+                      shipment.status
+                      === 'CONFIRMED'
+                    ) {
+                      <button
+                        *appPermission="[
+                          'OPERASYON_YONETICISI'
+                        ]"
+                        class="success"
+                        type="button"
+                        (click)="
+                          runAction(
+                            shipment.id,
+                            'ship'
+                          )
+                        ">
+                        Yola Çıkar
+                      </button>
+                    }
+
+                    @if (
+                      shipment.status
+                      === 'SHIPPED'
+                    ) {
+                      <button
+                        *appPermission="[
+                          'OPERASYON_YONETICISI'
+                        ]"
+                        class="success"
+                        type="button"
+                        (click)="
+                          runAction(
+                            shipment.id,
+                            'deliver'
+                          )
+                        ">
+                        Teslim Et
+                      </button>
+                    }
+
+                    @if (
+                      shipment.status
+                      !== 'DELIVERED'
+                      &&
+                      shipment.status
+                      !== 'CANCELLED'
+                    ) {
+                      <button
+                        *appPermission="[
+                          'OPERASYON_YONETICISI'
+                        ]"
+                        class="danger"
+                        type="button"
+                        (click)="
+                          cancel(
+                            shipment.id
+                          )
+                        ">
+                        İptal
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</section>

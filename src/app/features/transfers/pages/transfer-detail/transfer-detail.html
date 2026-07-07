@@ -1,0 +1,422 @@
+<section class="transfer-detail-page">
+
+  <a
+    class="back-link"
+    routerLink="/transferler">
+    <span aria-hidden="true">←</span>
+    Transferlere dön
+  </a>
+
+
+  @if (loading()) {
+    <section
+      class="state-card loading-state"
+      aria-live="polite">
+
+      <span class="state-spinner"></span>
+
+      <div>
+        <strong>Transfer yükleniyor</strong>
+        <p>Transfer bilgileri hazırlanıyor...</p>
+      </div>
+
+    </section>
+  }
+
+
+  @if (error()) {
+    <section
+      class="state-card error-state"
+      role="alert">
+
+      <span class="state-icon">!</span>
+
+      <div>
+        <strong>Transfer yüklenemedi</strong>
+        <p>{{ error() }}</p>
+      </div>
+
+    </section>
+  }
+
+
+  @if (transfer(); as item) {
+
+    <section class="detail-hero">
+
+      <div class="hero-copy">
+
+        <div class="hero-topline">
+
+          <span class="hero-kicker">
+            TRANSFER YÖNETİMİ
+          </span>
+
+          <span
+            class="status-badge"
+            [class.status-pending]="item.status === 'PENDING'"
+            [class.status-approved]="item.status === 'APPROVED'"
+            [class.status-cancelled]="item.status === 'CANCELLED'">
+
+            @switch (item.status) {
+              @case ('PENDING') {
+                Bekliyor
+              }
+
+              @case ('APPROVED') {
+                Onaylandı
+              }
+
+              @case ('CANCELLED') {
+                İptal Edildi
+              }
+
+              @default {
+                {{ item.status }}
+              }
+            }
+
+          </span>
+
+        </div>
+
+
+        <h1>Transfer Detayı</h1>
+
+        <p class="hero-description">
+          {{
+            item.note
+              ?? 'Bu transfer için ek açıklama bulunmuyor.'
+          }}
+        </p>
+
+      </div>
+
+
+      <div class="hero-id">
+
+        <span>TRANSFER KAYDI</span>
+
+        <strong>
+          {{ item.id }}
+        </strong>
+
+      </div>
+
+    </section>
+
+
+    <section class="summary-strip">
+
+      <article class="summary-card">
+
+        <span class="summary-icon">▣</span>
+
+        <div>
+          <small>Ürün</small>
+
+          <strong>
+            {{ item.productId }}
+          </strong>
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <span class="summary-icon">#</span>
+
+        <div>
+          <small>Miktar</small>
+
+          <strong>
+            {{ item.quantity }}
+          </strong>
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <span class="summary-icon">→</span>
+
+        <div>
+          <small>Transfer Durumu</small>
+
+          <strong>
+            @switch (item.status) {
+              @case ('PENDING') {
+                Bekliyor
+              }
+
+              @case ('APPROVED') {
+                Onaylandı
+              }
+
+              @case ('CANCELLED') {
+                İptal Edildi
+              }
+
+              @default {
+                {{ item.status }}
+              }
+            }
+          </strong>
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <section class="detail-layout">
+
+      <section class="detail-panel">
+
+        <header class="panel-heading">
+
+          <div>
+            <span class="panel-kicker">
+              TRANSFER BİLGİLERİ
+            </span>
+
+            <h2>Operasyon Özeti</h2>
+          </div>
+
+          <span class="panel-mark">↔</span>
+
+        </header>
+
+
+        <div class="detail-grid">
+
+          <article class="detail-field">
+
+            <span>Ürün ID</span>
+
+            <strong>
+              {{ item.productId }}
+            </strong>
+
+          </article>
+
+
+          <article class="detail-field">
+
+            <span>Miktar</span>
+
+            <strong>
+              {{ item.quantity }}
+            </strong>
+
+          </article>
+
+
+          <article class="detail-field">
+
+            <span>Kaynak Depo</span>
+
+            <strong>
+              {{ item.sourceWarehouseId }}
+            </strong>
+
+          </article>
+
+
+          <article class="detail-field">
+
+            <span>Hedef Depo</span>
+
+            <strong>
+              {{ item.destinationWarehouseId }}
+            </strong>
+
+          </article>
+
+
+          <article class="detail-field date-field">
+
+            <span>Talep Tarihi</span>
+
+            <strong>
+              {{ item.requestedAt }}
+            </strong>
+
+          </article>
+
+
+          <article class="detail-field date-field">
+
+            <span>Karar Tarihi</span>
+
+            <strong>
+              {{ item.decidedAt ?? 'Henüz karar verilmedi' }}
+            </strong>
+
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <aside class="flow-panel">
+
+        <header class="flow-heading">
+
+          <span class="panel-kicker">
+            TRANSFER AKIŞI
+          </span>
+
+          <h2>Depolar Arası Hareket</h2>
+
+        </header>
+
+
+        <div class="warehouse-flow">
+
+          <article class="warehouse-node source-node">
+
+            <span class="node-label">
+              KAYNAK DEPO
+            </span>
+
+            <strong>
+              {{ item.sourceWarehouseId }}
+            </strong>
+
+            <small>
+              Transfer oluşturulduğunda stok düşer
+            </small>
+
+          </article>
+
+
+          <div
+            class="flow-arrow"
+            aria-hidden="true">
+
+            <span></span>
+            →
+
+          </div>
+
+
+          <article class="warehouse-node target-node">
+
+            <span class="node-label">
+              HEDEF DEPO
+            </span>
+
+            <strong>
+              {{ item.destinationWarehouseId }}
+            </strong>
+
+            <small>
+              Onay sonrası stok eklenir
+            </small>
+
+          </article>
+
+        </div>
+
+
+        @if (item.status === pending) {
+
+          <section class="decision-box">
+
+            <div class="decision-copy">
+
+              <span>ONAY BEKLİYOR</span>
+
+              <strong>
+                Bu transfer için karar verilebilir
+              </strong>
+
+              <p>
+                Onay işlemi hedef depo stoğunu etkiler.
+                İptal işlemi bekleyen transfer akışını sonlandırır.
+              </p>
+
+            </div>
+
+
+            <div class="detail-actions">
+
+              <button
+                class="approve-button"
+                type="button"
+                (click)="approve(item.id)">
+
+                <span aria-hidden="true">✓</span>
+                Transferi Onayla
+
+              </button>
+
+
+              <button
+                class="cancel-button"
+                type="button"
+                (click)="cancel(item.id)">
+
+                <span aria-hidden="true">×</span>
+                Transferi İptal Et
+
+              </button>
+
+            </div>
+
+          </section>
+
+        }
+
+
+        @if (item.status === 'APPROVED') {
+
+          <section class="result-box approved-result">
+
+            <span class="result-icon">✓</span>
+
+            <div>
+              <strong>Transfer onaylandı</strong>
+
+              <p>
+                Hedef depo stok hareketi tamamlanmıştır.
+              </p>
+            </div>
+
+          </section>
+
+        }
+
+
+        @if (item.status === 'CANCELLED') {
+
+          <section class="result-box cancelled-result">
+
+            <span class="result-icon">×</span>
+
+            <div>
+              <strong>Transfer iptal edildi</strong>
+
+              <p>
+                {{
+                  item.cancellationReason
+                    ?? 'İptal nedeni belirtilmemiş.'
+                }}
+              </p>
+            </div>
+
+          </section>
+
+        }
+
+      </aside>
+
+    </section>
+
+  }
+
+</section>

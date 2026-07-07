@@ -1,0 +1,9 @@
+<section class="page"><a class="back" routerLink="/urunler">← Ürünlere dön</a>
+@if(loading()){<div class="state">Ürün detayları yükleniyor...</div>}
+@if(error()){<div class="state error">{{error()}}</div>}
+@if(viewModel();as vm){
+<section class="hero"><div><span>{{vm.product.code}}</span><h1>{{vm.product.name}}</h1><p>{{vm.product.description??'Ürün açıklaması bulunmuyor.'}}</p></div><aside><small>Toplam Stok</small><strong>{{formatNumber(vm.totalStock)}}</strong><span>{{vm.product.unit}}</span></aside></section>
+<section class="details"><article><span>Kategori</span><strong>{{vm.product.category}}</strong></article><article><span>Birim</span><strong>{{vm.product.unit}}</strong></article><article><span>Barkod</span><strong>{{vm.product.barcode??'-'}}</strong></article><article><span>Birim Fiyat</span><strong>{{formatPrice(vm.product.unitPrice)}}</strong></article><article><span>Minimum Stok</span><strong>{{vm.product.defaultMinQuantity}}</strong></article><article><span>Durum</span><strong>{{vm.product.isActive?'Aktif':'Pasif'}}</strong></article></section>
+<div *appPermission="['DEPO_SORUMLUSU','OPERASYON_YONETICISI']" class="actions"><a [routerLink]="['/urunler',vm.product.id,'edit']">Düzenle</a></div>
+<section class="analytics"><app-product-balance-table [rows]="vm.balances"></app-product-balance-table><app-product-movement-timeline [movements]="vm.movements"></app-product-movement-timeline></section>
+}</section>

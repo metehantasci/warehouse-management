@@ -1,0 +1,27 @@
+<aside class="user-switcher">
+  <div class="switcher-copy">
+    <span>AKTİF KULLANICI</span>
+
+    <strong>
+      {{
+        auth.currentUser()?.fullName
+        ?? 'Kullanıcı seç'
+      }}
+    </strong>
+  </div>
+
+  <select
+    aria-label="Aktif kullanıcıyı değiştir"
+    [value]="auth.currentUser()?.id ?? ''"
+    (change)="changeUser($event)">
+
+    @for (user of users; track user.id) {
+      <option [value]="user.id">
+        {{ user.fullName }}
+        ·
+        {{ user.roleLabel }}
+      </option>
+    }
+
+  </select>
+</aside>

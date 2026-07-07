@@ -1,0 +1,188 @@
+<section class="page">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">
+        LOJİSTİK AÄI
+      </span>
+
+      <h2>Depolar</h2>
+
+      <p>
+        Depo kayıtları gerçek API katmanından okunur; detay, düzenleme ve pasife alma işlemleri aktiftir.
+      </p>
+    </div>
+
+    <a
+      *appPermission="[
+        'DEPO_SORUMLUSU',
+        'OPERASYON_YONETICISI'
+      ]"
+      class="primary"
+      routerLink="yeni">
+      + Yeni Depo
+    </a>
+  </section>
+
+  <section class="stats">
+    <article class="stat">
+      <span>Aktif Depo</span>
+      <strong>{{ warehouses().length }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Toplam Kapasite</span>
+      <strong>
+        {{ formatNumber(totalCapacity()) }}
+      </strong>
+    </article>
+
+    <article class="stat">
+      <span>Filtre Sonucu</span>
+      <strong>{{ filtered().length }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Durum</span>
+      <strong>Canlı</strong>
+    </article>
+  </section>
+
+  <section class="toolbar">
+    <input
+      type="text"
+      [value]="search()"
+      (input)="onSearch($event)">
+
+    <button
+      type="button"
+      (click)="load()">
+      Yenile
+    </button>
+  </section>
+
+  @if (loading()) {
+    <div class="loading">
+      Depolar yükleniyor...
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error">
+      {{ error() }}
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length === 0
+  ) {
+    <div class="empty">
+      <strong>Depo bulunamadı</strong>
+      <p>
+        Arama kriterini değiştirerek tekrar deneyin.
+      </p>
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length > 0
+  ) {
+    <section class="cards">
+      @for (
+        warehouse of filtered();
+        track warehouse.id
+      ) {
+        <article class="card">
+          <span class="badge green">
+            {{ warehouse.code }}
+          </span>
+
+          <h3>{{ warehouse.name }}</h3>
+
+          <p>{{ warehouse.address }}</p>
+
+          <div class="card-meta">
+            <div>
+              <span>Konum</span>
+              <strong>
+                {{
+                  warehouse.district
+                  ?? '-'
+                }},
+                {{ warehouse.city }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Kapasite</span>
+              <strong>
+                {{
+                  formatNumber(
+                    warehouse.capacity
+                    ?? 0
+                  )
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Sorumlu</span>
+              <strong>
+                {{
+                  warehouse.responsiblePerson
+                  ?? '-'
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Telefon</span>
+              <strong>
+                {{ warehouse.phone ?? '-' }}
+              </strong>
+            </div>
+          </div>
+
+          <div
+            class="row-actions"
+            style="margin-top: 13px">
+
+            <a [routerLink]="[warehouse.id]">
+              Detay
+            </a>
+
+            <a
+              *appPermission="[
+                'DEPO_SORUMLUSU',
+                'OPERASYON_YONETICISI'
+              ]"
+              [routerLink]="[
+                warehouse.id,
+                'edit'
+              ]">
+              Düzenle
+            </a>
+
+            <button
+              *appPermission="[
+                'DEPO_SORUMLUSU',
+                'OPERASYON_YONETICISI'
+              ]"
+              class="danger"
+              type="button"
+              (click)="remove(warehouse)">
+              Sil
+            </button>
+          </div>
+        </article>
+      }
+    </section>
+  }
+</section>

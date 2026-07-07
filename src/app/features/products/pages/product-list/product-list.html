@@ -1,0 +1,198 @@
+<section class="page">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">
+        ENVANTER YÖNETİMİ
+      </span>
+
+      <h2>Ürünler</h2>
+
+      <p>
+        Gerçek mock API verisiyle ürünleri ara, görüntüle, düzenle ve pasife al.
+      </p>
+    </div>
+
+    <a
+      *appPermission="[
+        'DEPO_SORUMLUSU',
+        'OPERASYON_YONETICISI'
+      ]"
+      class="primary"
+      routerLink="yeni">
+      + Yeni Ürün
+    </a>
+  </section>
+
+  <section class="stats">
+    <article class="stat">
+      <span>Aktif Ürün</span>
+      <strong>{{ products().length }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Kategori</span>
+      <strong>{{ categories().length - 1 }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Filtre Sonucu</span>
+      <strong>{{ filtered().length }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Veri Kaynağı</span>
+      <strong>Mock API</strong>
+    </article>
+  </section>
+
+  <section class="toolbar">
+    <input
+      type="text"
+      [value]="search()"
+      (input)="onSearch($event)">
+
+    <select
+      [value]="category()"
+      (change)="onCategory($event)">
+
+      @for (
+        item of categories();
+        track item
+      ) {
+        <option [value]="item">
+          {{ item }}
+        </option>
+      }
+    </select>
+
+    <button
+      type="button"
+      (click)="load()">
+      Yenile
+    </button>
+  </section>
+
+  @if (loading()) {
+    <div class="loading">
+      Ürünler yükleniyor...
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error">
+      {{ error() }}
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length === 0
+  ) {
+    <div class="empty">
+      <strong>Sonuç bulunamadı</strong>
+      <p>
+        Arama veya kategori filtresini değiştirerek tekrar deneyin.
+      </p>
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length > 0
+  ) {
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Ürün Listesi</h3>
+        <span>
+          {{ filtered().length }} kayıt
+        </span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Kod</th>
+              <th>Ürün</th>
+              <th>Kategori</th>
+              <th>Birim</th>
+              <th>Fiyat</th>
+              <th>Min. Stok</th>
+              <th>İşlemler</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (
+              product of filtered();
+              track product.id
+            ) {
+              <tr>
+                <td>
+                  <strong>
+                    {{ product.code }}
+                  </strong>
+                </td>
+
+                <td>{{ product.name }}</td>
+
+                <td>
+                  <span class="badge">
+                    {{ product.category }}
+                  </span>
+                </td>
+
+                <td>{{ product.unit }}</td>
+
+                <td>
+                  {{ formatPrice(product.unitPrice) }}
+                </td>
+
+                <td>
+                  {{ product.defaultMinQuantity }}
+                </td>
+
+                <td>
+                  <div class="row-actions">
+                    <a [routerLink]="[product.id]">
+                      Detay
+                    </a>
+
+                    <a
+                      *appPermission="[
+                        'DEPO_SORUMLUSU',
+                        'OPERASYON_YONETICISI'
+                      ]"
+                      [routerLink]="[
+                        product.id,
+                        'edit'
+                      ]">
+                      Düzenle
+                    </a>
+
+                    <button
+                      *appPermission="[
+                        'DEPO_SORUMLUSU',
+                        'OPERASYON_YONETICISI'
+                      ]"
+                      class="danger"
+                      type="button"
+                      (click)="remove(product)">
+                      Sil
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</section>

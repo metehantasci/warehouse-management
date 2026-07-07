@@ -1,0 +1,221 @@
+﻿import {
+  Component,
+  computed,
+  signal
+} from '@angular/core';
+
+
+type ShipmentStatus =
+  'Hazırlanıyor'
+  | 'Yola Çıktı'
+  | 'Teslim Edildi'
+  | 'Gecikti';
+
+
+interface ShipmentItem {
+
+  id: number;
+
+  code: string;
+
+  customer: string;
+
+  city: string;
+
+  itemCount: number;
+
+  carrier: string;
+
+  status: ShipmentStatus;
+
+  shipmentDate: string;
+
+  deliveryDate: string;
+}
+
+
+@Component({
+  selector: 'app-shipments',
+  standalone: true,
+
+  imports: [],
+
+  templateUrl: './shipment-detail.html',
+  styleUrl: './shipment-detail.scss'
+})
+export class ShipmentDetail {
+
+  readonly searchTerm =
+    signal('');
+
+
+  readonly selectedStatus =
+    signal('Tümü');
+
+
+  readonly shipments:
+    ShipmentItem[] = [
+
+      {
+        id: 1,
+        code: 'SVK-2026-1042',
+        customer: 'Nova Teknoloji A.Ş.',
+        city: 'İstanbul',
+        itemCount: 14,
+        carrier: 'Yurtiçi Kargo',
+        status: 'Yola Çıktı',
+        shipmentDate: '06.07.2026',
+        deliveryDate: '07.07.2026'
+      },
+
+      {
+        id: 2,
+        code: 'SVK-2026-1041',
+        customer: 'Artemis Yazılım',
+        city: 'Ankara',
+        itemCount: 8,
+        carrier: 'MNG Kargo',
+        status: 'Hazırlanıyor',
+        shipmentDate: '06.07.2026',
+        deliveryDate: '08.07.2026'
+      },
+
+      {
+        id: 3,
+        code: 'SVK-2026-1040',
+        customer: 'Ege Bilişim Ltd.',
+        city: 'İzmir',
+        itemCount: 21,
+        carrier: 'Aras Kargo',
+        status: 'Teslim Edildi',
+        shipmentDate: '05.07.2026',
+        deliveryDate: '06.07.2026'
+      },
+
+      {
+        id: 4,
+        code: 'SVK-2026-1039',
+        customer: 'Marmara Sistem',
+        city: 'Bursa',
+        itemCount: 5,
+        carrier: 'Sürat Kargo',
+        status: 'Gecikti',
+        shipmentDate: '04.07.2026',
+        deliveryDate: '06.07.2026'
+      },
+
+      {
+        id: 5,
+        code: 'SVK-2026-1038',
+        customer: 'Akdeniz Elektronik',
+        city: 'Antalya',
+        itemCount: 17,
+        carrier: 'Yurtiçi Kargo',
+        status: 'Yola Çıktı',
+        shipmentDate: '05.07.2026',
+        deliveryDate: '07.07.2026'
+      },
+
+      {
+        id: 6,
+        code: 'SVK-2026-1037',
+        customer: 'Başkent Donanım',
+        city: 'Ankara',
+        itemCount: 11,
+        carrier: 'Aras Kargo',
+        status: 'Teslim Edildi',
+        shipmentDate: '03.07.2026',
+        deliveryDate: '04.07.2026'
+      }
+    ];
+
+
+  readonly filteredShipments =
+    computed(() => {
+
+      const search =
+        this.searchTerm()
+          .trim()
+          .toLocaleLowerCase('tr-TR');
+
+
+      return this.shipments.filter(
+        shipment => {
+
+          const matchesSearch =
+            !search
+            ||
+            shipment.code
+              .toLocaleLowerCase('tr-TR')
+              .includes(search)
+            ||
+            shipment.customer
+              .toLocaleLowerCase('tr-TR')
+              .includes(search)
+            ||
+            shipment.city
+              .toLocaleLowerCase('tr-TR')
+              .includes(search);
+
+
+          const matchesStatus =
+            this.selectedStatus() === 'Tümü'
+            ||
+            shipment.status ===
+              this.selectedStatus();
+
+
+          return (
+            matchesSearch
+            &&
+            matchesStatus
+          );
+        }
+      );
+    });
+
+
+  statusCount(
+    status: ShipmentStatus
+  ): number {
+
+    return this.shipments.filter(
+      shipment =>
+        shipment.status === status
+    ).length;
+  }
+
+
+  onSearch(
+    event: Event
+  ): void {
+
+    this.searchTerm.set(
+      (
+        event.target
+        as HTMLInputElement
+      ).value
+    );
+  }
+
+
+  onStatusChange(
+    event: Event
+  ): void {
+
+    this.selectedStatus.set(
+      (
+        event.target
+        as HTMLSelectElement
+      ).value
+    );
+  }
+
+
+  clearFilters(): void {
+
+    this.searchTerm.set('');
+
+    this.selectedStatus.set('Tümü');
+  }
+}

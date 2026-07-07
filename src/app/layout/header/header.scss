@@ -1,0 +1,221 @@
+:host {
+  display: block;
+}
+
+.app-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  min-height: 82px;
+
+  padding:
+    0
+    30px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.96
+    );
+
+  border-bottom:
+    1px solid
+    #e8edf4;
+
+  backdrop-filter:
+    blur(12px);
+}
+
+.header-left,
+.header-actions {
+  display: flex;
+
+  align-items: center;
+}
+
+.header-left {
+  gap: 13px;
+}
+
+.header-actions {
+  gap: 14px;
+}
+
+.mobile-menu-button {
+  display: none;
+
+  width: 40px;
+  height: 40px;
+
+  padding: 0;
+
+  color: #475569;
+
+  font-size: 18px;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    #e2e8f0;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+}
+
+.title-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-kicker {
+  color: #2563eb;
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: 1.5px;
+}
+
+.title-block strong {
+  margin-top: 3px;
+
+  color: #0f172a;
+
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.header-divider {
+  width: 1px;
+  height: 34px;
+
+  background: #e2e8f0;
+}
+
+.user-copy {
+  display: flex;
+
+  align-items: flex-end;
+
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.user-copy strong {
+  max-width: 220px;
+
+  overflow: hidden;
+
+  color: #1e293b;
+
+  font-size: 11px;
+  font-weight: 850;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.user-copy span {
+  margin-top: 3px;
+
+  color: #94a3b8;
+
+  font-size: 7px;
+  font-weight: 750;
+}
+
+.user-avatar {
+  display: grid;
+  place-items: center;
+
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 900;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #7c3aed
+    );
+
+  border-radius: 13px;
+
+  box-shadow:
+    0 9px 22px
+    rgba(79, 70, 229, 0.22);
+}
+
+@media (
+  max-width: 980px
+) {
+  .app-header {
+    padding:
+      0
+      18px;
+  }
+
+  .mobile-menu-button {
+    display: grid;
+    place-items: center;
+  }
+}
+
+@media (
+  max-width: 680px
+) {
+  .app-header {
+    min-height: 72px;
+
+    padding:
+      0
+      12px;
+  }
+
+  .header-kicker,
+  .user-copy,
+  .header-divider {
+    display: none;
+  }
+
+  .title-block strong {
+    font-size: 13px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .user-avatar {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
+}
+
+
+/* WMS_NOTIFICATION_HEADER_LAYER_FIX */
+:host {
+  position: relative;
+  z-index: 10000;
+}
+
+.app-header {
+  position: relative;
+  z-index: 10000;
+}

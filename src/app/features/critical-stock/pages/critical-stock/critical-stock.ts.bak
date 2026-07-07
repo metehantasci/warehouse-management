@@ -1,0 +1,219 @@
+﻿import {
+  Component,
+  computed,
+  signal
+} from '@angular/core';
+
+
+interface CriticalItem {
+
+  id: number;
+
+  name: string;
+
+  sku: string;
+
+  category: string;
+
+  stock: number;
+
+  minStock: number;
+
+  warehouse: string;
+}
+
+
+@Component({
+  selector: 'app-critical-stock',
+  standalone: true,
+
+  imports: [],
+
+  templateUrl: './critical-stock.html',
+  styleUrl: './critical-stock.scss'
+})
+export class CriticalStock {
+
+  readonly searchTerm =
+    signal('');
+
+
+  readonly items:
+    CriticalItem[] = [
+
+      {
+        id: 1,
+        name: 'Logitech K380 Klavye',
+        sku: 'URN-0218',
+        category: 'Aksesuar',
+        stock: 4,
+        minStock: 15,
+        warehouse: 'Ankara Merkez'
+      },
+
+      {
+        id: 2,
+        name: 'Samsung T7 SSD 1TB',
+        sku: 'URN-0342',
+        category: 'Depolama',
+        stock: 6,
+        minStock: 20,
+        warehouse: 'İzmir Bölge'
+      },
+
+      {
+        id: 3,
+        name: 'TP-Link Archer AX55',
+        sku: 'URN-0574',
+        category: 'Network',
+        stock: 3,
+        minStock: 10,
+        warehouse: 'Ankara Merkez'
+      },
+
+      {
+        id: 4,
+        name: 'HyperX Cloud III',
+        sku: 'URN-0811',
+        category: 'Aksesuar',
+        stock: 8,
+        minStock: 18,
+        warehouse: 'İstanbul Avrupa'
+      },
+
+      {
+        id: 5,
+        name: 'Apple Magic Keyboard',
+        sku: 'URN-0945',
+        category: 'Aksesuar',
+        stock: 0,
+        minStock: 10,
+        warehouse: 'İstanbul Anadolu'
+      },
+
+      {
+        id: 6,
+        name: 'Dell UltraSharp U2724D',
+        sku: 'URN-1102',
+        category: 'Monitör',
+        stock: 5,
+        minStock: 12,
+        warehouse: 'Bursa Dağıtım'
+      },
+
+      {
+        id: 7,
+        name: 'Ubiquiti UniFi U7 Pro',
+        sku: 'URN-1407',
+        category: 'Network',
+        stock: 2,
+        minStock: 10,
+        warehouse: 'İzmir Bölge'
+      }
+    ];
+
+
+  readonly filteredItems =
+    computed(() => {
+
+      const search =
+        this.searchTerm()
+          .trim()
+          .toLocaleLowerCase('tr-TR');
+
+
+      return this.items.filter(
+        item =>
+          !search
+          ||
+          item.name
+            .toLocaleLowerCase('tr-TR')
+            .includes(search)
+          ||
+          item.sku
+            .toLocaleLowerCase('tr-TR')
+            .includes(search)
+          ||
+          item.warehouse
+            .toLocaleLowerCase('tr-TR')
+            .includes(search)
+      );
+    });
+
+
+  readonly outOfStockCount =
+    computed(() =>
+      this.items.filter(
+        item =>
+          item.stock === 0
+      ).length
+    );
+
+
+  readonly urgentCount =
+    computed(() =>
+      this.items.filter(
+        item =>
+          item.stock > 0
+          &&
+          this.stockPercent(item) <= 30
+      ).length
+    );
+
+
+  stockPercent(
+    item: CriticalItem
+  ): number {
+
+    if (item.minStock <= 0) {
+      return 0;
+    }
+
+
+    return Math.min(
+      100,
+      Math.round(
+        (
+          item.stock
+          /
+          item.minStock
+        )
+        * 100
+      )
+    );
+  }
+
+
+  severity(
+    item: CriticalItem
+  ): string {
+
+    if (item.stock === 0) {
+      return 'Tükendi';
+    }
+
+
+    if (
+      this.stockPercent(item)
+      <= 30
+    ) {
+      return 'Acil';
+    }
+
+
+    return 'Kritik';
+  }
+
+
+  onSearch(
+    event: Event
+  ): void {
+
+    this.searchTerm.set(
+      (
+        event.target
+        as HTMLInputElement
+      ).value
+    );
+  }
+}

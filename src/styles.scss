@@ -1,0 +1,35 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* WMS_FINAL_BASELINE */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: #0f172a;
+  background: #f5f7fb;
+  font-family:
+    Inter,
+    Arial,
+    sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
+}

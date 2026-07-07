@@ -1,0 +1,320 @@
+﻿:host {
+  display: block;
+}
+
+.page {
+  width: 100%;
+  max-width: 1700px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 140px;
+  padding: 27px 31px;
+  color: #fff;
+  background:
+    linear-gradient(
+      125deg,
+      #172554,
+      #1d4ed8 55%,
+      #7c3aed
+    );
+  border-radius: 20px;
+}
+
+.eyebrow {
+  color: #bfdbfe;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.hero h2 {
+  margin: 6px 0 0;
+  font-size: 30px;
+}
+
+.hero p {
+  margin: 8px 0 0;
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.72
+    );
+  font-size: 11px;
+}
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  color: #1d4ed8;
+  font-size: 9px;
+  font-weight: 800;
+  text-decoration: none;
+  background: #fff;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.stat {
+  padding: 17px;
+  background: #fff;
+  border:
+    1px solid
+    #e8edf4;
+  border-radius: 15px;
+}
+
+.stat span {
+  color: #94a3b8;
+  font-size: 8px;
+}
+
+.stat strong {
+  display: block;
+  margin-top: 4px;
+  color: #0f172a;
+  font-size: 19px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 14px;
+  background: #fff;
+  border:
+    1px solid
+    #e8edf4;
+  border-radius: 15px;
+}
+
+.toolbar input,
+.toolbar select,
+.toolbar button {
+  height: 41px;
+  font-size: 9px;
+  border:
+    1px solid
+    #e2e8f0;
+  border-radius: 10px;
+}
+
+.toolbar input {
+  flex: 1;
+  min-width: 220px;
+  padding: 0 12px;
+  background: #f8fafc;
+}
+
+.toolbar select {
+  min-width: 170px;
+  padding: 0 10px;
+  color: #334155;
+  background: #f8fafc;
+}
+
+.toolbar button {
+  padding: 0 13px;
+  color: #64748b;
+  font-weight: 700;
+  background: #fff;
+  cursor: pointer;
+}
+
+.panel {
+  margin-top: 18px;
+  overflow: hidden;
+  background: #fff;
+  border:
+    1px solid
+    #e8edf4;
+  border-radius: 17px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom:
+    1px solid
+    #eef2f7;
+}
+
+.panel-header h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.panel-header span {
+  color: #94a3b8;
+  font-size: 8px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 950px;
+  border-collapse: collapse;
+}
+
+th {
+  padding: 11px 13px;
+  color: #94a3b8;
+  font-size: 8px;
+  text-align: left;
+  background: #f8fafc;
+}
+
+td {
+  padding: 12px 13px;
+  color: #64748b;
+  font-size: 8px;
+  border-bottom:
+    1px solid
+    #f1f5f9;
+}
+
+td strong {
+  color: #334155;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 5px 8px;
+  color: #1d4ed8;
+  font-size: 7px;
+  font-weight: 750;
+  background: #dbeafe;
+  border-radius: 999px;
+}
+
+.badge.green {
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.badge.red {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.actions a,
+.actions button {
+  min-height: 29px;
+  padding: 0 8px;
+  color: #2563eb;
+  font-size: 7px;
+  font-weight: 750;
+  text-decoration: none;
+  background: #eff6ff;
+  border:
+    1px solid
+    #dbeafe;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.actions button.danger {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.state,
+.empty {
+  padding: 28px;
+  color: #64748b;
+  font-size: 10px;
+  text-align: center;
+  background: #fff;
+  border:
+    1px solid
+    #e8edf4;
+  border-radius: 15px;
+}
+
+.state {
+  margin-top: 18px;
+}
+
+.state.error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+@media (
+  max-width: 900px
+) {
+  .stats {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
+  }
+
+  .toolbar {
+    flex-wrap: wrap;
+  }
+
+  .toolbar input {
+    flex-basis: 100%;
+  }
+}
+
+@media (
+  max-width: 600px
+) {
+  .hero {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 22px 20px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar {
+    flex-direction: column;
+  }
+
+  .toolbar input,
+  .toolbar select {
+    width: 100%;
+    min-width: 0;
+  }
+}

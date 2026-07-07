@@ -1,0 +1,36 @@
+﻿<div class="app-shell">
+
+  <app-sidebar
+    [open]="sidebarOpen()"
+    (closeSidebar)="closeSidebar()">
+  </app-sidebar>
+
+
+  <div
+    class="mobile-backdrop"
+    [class.visible]="sidebarOpen()"
+    (click)="closeSidebar()">
+  </div>
+
+
+  <div class="app-content">
+
+    <app-header
+      (menuToggle)="toggleSidebar()">
+    </app-header>
+
+
+    <main class="page-content">
+
+      <router-outlet>
+      </router-outlet>
+
+    </main>
+
+
+    <app-footer>
+    </app-footer>
+
+  </div>
+
+</div>

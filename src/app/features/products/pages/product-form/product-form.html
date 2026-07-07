@@ -1,0 +1,186 @@
+<section class="form-page">
+  <a
+    class="back"
+    routerLink="/urunler">
+    ← Ürünlere Dön
+  </a>
+
+  <section class="form-hero">
+    <span class="eyebrow">
+      ENVANTER YÖNETİMİ
+    </span>
+
+    <h1>
+      {{
+        isEditMode
+          ? 'Ürünü Düzenle'
+          : 'Yeni Ürün'
+      }}
+    </h1>
+
+    <p>
+      Ürün bilgilerini doğrulanmış Reactive Form üzerinden kaydet.
+    </p>
+  </section>
+
+  @if (facade.isLoading()) {
+    <div class="state-box">
+      Ürün yükleniyor...
+    </div>
+  }
+
+  @if (facade.error()) {
+    <div class="state-box error">
+      {{ facade.error() }}
+    </div>
+  }
+
+  @if (!facade.isLoading()) {
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <div class="form-grid">
+        <label>
+          <span>Ürün Kodu *</span>
+
+          <input
+            type="text"
+            formControlName="code">
+
+          @if (fieldInvalid('code')) {
+            <small class="field-error">
+              En az 2 karakterlik ürün kodu girin.
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>Ürün Adı *</span>
+
+          <input
+            type="text"
+            formControlName="name">
+
+          @if (fieldInvalid('name')) {
+            <small class="field-error">
+              Geçerli bir ürün adı girin.
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>Kategori *</span>
+
+          <input
+            type="text"
+            formControlName="category">
+
+          @if (fieldInvalid('category')) {
+            <small class="field-error">
+              Kategori zorunludur.
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>Birim *</span>
+
+          <select
+            formControlName="unit">
+
+            @for (
+              item of units;
+              track item
+            ) {
+              <option [value]="item">
+                {{ item }}
+              </option>
+            }
+
+          </select>
+        </label>
+
+        <label>
+          <span>Barkod</span>
+
+          <input
+            type="text"
+            formControlName="barcode">
+        </label>
+
+        <label>
+          <span>Birim Fiyat</span>
+
+          <input
+            type="number"
+            formControlName="unitPrice"
+            min="0"
+            step="0.01">
+
+          @if (fieldInvalid('unitPrice')) {
+            <small class="field-error">
+              Fiyat negatif olamaz.
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>Minimum Stok</span>
+
+          <input
+            type="number"
+            formControlName="defaultMinQuantity"
+            min="0">
+
+          @if (
+            fieldInvalid(
+              'defaultMinQuantity'
+            )
+          ) {
+            <small class="field-error">
+              Minimum stok negatif olamaz.
+            </small>
+          }
+        </label>
+
+        <label class="full">
+          <span>Açıklama</span>
+
+          <textarea
+            formControlName="description"
+            rows="5">
+          </textarea>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <a
+          class="secondary-button"
+          routerLink="/urunler">
+          Vazgeç
+        </a>
+
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="
+            saving
+            ||
+            form.invalid
+          ">
+          {{
+            saving
+              ? 'Kaydediliyor...'
+              : (
+                  isEditMode
+                    ? 'Değişiklikleri Kaydet'
+                    : 'Ürünü Oluştur'
+                )
+          }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

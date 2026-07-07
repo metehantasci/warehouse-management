@@ -1,0 +1,168 @@
+<section class="form-page">
+  <a
+    class="back"
+    routerLink="/stok-hareketleri">
+    ← Stok Hareketlerine Dön
+  </a>
+
+  <section class="form-hero">
+    <span class="eyebrow">
+      ENVANTER OPERASYONU
+    </span>
+
+    <h1>
+      Yeni Stok Hareketi
+    </h1>
+
+    <p>
+      Giriş, çıkış veya bakiye düzeltme işlemi oluştur.
+    </p>
+  </section>
+
+  @if (facade.loading()) {
+    <div class="state-box">
+      Form verileri yükleniyor...
+    </div>
+  }
+
+  @if (
+    facade.error()
+    ||
+    submitError
+  ) {
+    <div class="state-box error">
+      {{
+        submitError
+        ?? facade.error()
+      }}
+    </div>
+  }
+
+  @if (!facade.loading()) {
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <div class="form-grid">
+        <label>
+          <span>Ürün *</span>
+
+          <select
+            formControlName="productId">
+
+            @for (
+              item of facade.products();
+              track item.id
+            ) {
+              <option [value]="item.id">
+                {{ item.code }} - {{ item.name }}
+              </option>
+            }
+
+          </select>
+        </label>
+
+        <label>
+          <span>Depo *</span>
+
+          <select
+            formControlName="warehouseId">
+
+            @for (
+              item of facade.warehouses();
+              track item.id
+            ) {
+              <option [value]="item.id">
+                {{ item.code }} - {{ item.name }}
+              </option>
+            }
+
+          </select>
+        </label>
+
+        <label>
+          <span>Hareket Tipi *</span>
+
+          <select
+            formControlName="type">
+
+            @for (
+              item of typeOptions;
+              track item
+            ) {
+              <option [value]="item">
+                {{ typeLabel(item) }}
+              </option>
+            }
+
+          </select>
+        </label>
+
+        @if (!isAdjustment) {
+          <label>
+            <span>Miktar *</span>
+
+            <input
+              type="number"
+              formControlName="quantity"
+              min="1">
+          </label>
+        }
+
+        @if (isAdjustment) {
+          <label>
+            <span>Hedef Bakiye *</span>
+
+            <input
+              type="number"
+              formControlName="targetBalance"
+              min="0">
+          </label>
+        }
+
+        <label class="full">
+          <span>Açıklama / Neden *</span>
+
+          <textarea
+            formControlName="reason"
+            rows="5">
+          </textarea>
+
+          @if (
+            form.controls.reason.invalid
+            &&
+            form.controls.reason.touched
+          ) {
+            <small class="field-error">
+              En az 3 karakterlik açıklama girin.
+            </small>
+          }
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <a
+          class="secondary-button"
+          routerLink="/stok-hareketleri">
+          Vazgeç
+        </a>
+
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="
+            saving
+            ||
+            form.invalid
+          ">
+          {{
+            saving
+              ? 'Kaydediliyor...'
+              : 'Hareketi Oluştur'
+          }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

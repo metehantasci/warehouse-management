@@ -1,0 +1,473 @@
+<section class="shipment-detail-page">
+
+  <a
+    class="back-link"
+    routerLink="/sevkiyatlar">
+    <span aria-hidden="true">←</span>
+    Sevkiyatlara dön
+  </a>
+
+  @if (loading()) {
+    <section class="state-card loading-state" aria-live="polite">
+      <span class="spinner"></span>
+
+      <div>
+        <strong>Sevkiyat yükleniyor</strong>
+        <p>Sevkiyat bilgileri hazırlanıyor...</p>
+      </div>
+    </section>
+  }
+
+  @if (error()) {
+    <section class="state-card error-state" role="alert">
+      <span class="error-icon">!</span>
+
+      <div>
+        <strong>Sevkiyat yüklenemedi</strong>
+        <p>{{ error() }}</p>
+      </div>
+    </section>
+  }
+
+  @if (shipment(); as item) {
+
+    <section class="shipment-hero">
+
+      <div class="hero-copy">
+
+        <div class="hero-topline">
+
+          <span class="hero-kicker">
+            SEVKİYAT YÖNETİMİ
+          </span>
+
+          <span
+            class="status-badge"
+            [class.status-planned]="item.status === PLANNED"
+            [class.status-confirmed]="item.status === CONFIRMED"
+            [class.status-shipped]="item.status === SHIPPED"
+            [class.status-delivered]="item.status === DELIVERED"
+            [class.status-cancelled]="item.status === CANCELLED">
+
+            @switch (item.status) {
+              @case (PLANNED) {
+                Planlandı
+              }
+
+              @case (CONFIRMED) {
+                Onaylandı
+              }
+
+              @case (SHIPPED) {
+                Yola Çıktı
+              }
+
+              @case (DELIVERED) {
+                Teslim Edildi
+              }
+
+              @case (CANCELLED) {
+                İptal Edildi
+              }
+
+              @default {
+                {{ item.status }}
+              }
+            }
+
+          </span>
+
+        </div>
+
+        <h1>{{ item.destinationName }}</h1>
+
+        <p class="destination-address">
+          {{ item.destinationAddress }}
+        </p>
+
+      </div>
+
+      <div class="shipment-code-box">
+        <span>SEVKİYAT KODU</span>
+        <strong>{{ item.code }}</strong>
+      </div>
+
+    </section>
+
+
+    <section class="summary-grid">
+
+      <article class="summary-card">
+        <span class="summary-icon">▣</span>
+
+        <div>
+          <small>Kaynak Depo</small>
+          <strong>{{ item.sourceWarehouseId }}</strong>
+        </div>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-icon">◷</span>
+
+        <div>
+          <small>Planlanan Tarih</small>
+          <strong>{{ item.plannedDate }}</strong>
+        </div>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-icon">#</span>
+
+        <div>
+          <small>Ürün Kalemi</small>
+          <strong>{{ item.items.length }}</strong>
+        </div>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-icon">→</span>
+
+        <div>
+          <small>Durum</small>
+
+          <strong>
+            @switch (item.status) {
+              @case (PLANNED) {
+                Planlandı
+              }
+
+              @case (CONFIRMED) {
+                Onaylandı
+              }
+
+              @case (SHIPPED) {
+                Yola Çıktı
+              }
+
+              @case (DELIVERED) {
+                Teslim Edildi
+              }
+
+              @case (CANCELLED) {
+                İptal Edildi
+              }
+
+              @default {
+                {{ item.status }}
+              }
+            }
+          </strong>
+        </div>
+      </article>
+
+    </section>
+
+
+    <section class="content-layout">
+
+      <section class="items-panel">
+
+        <header class="panel-header">
+
+          <div>
+            <span class="panel-kicker">
+              SEVKİYAT İÇERİĞİ
+            </span>
+
+            <h2>Sevkiyat Kalemleri</h2>
+          </div>
+
+          <span class="item-count">
+            {{ item.items.length }} kalem
+          </span>
+
+        </header>
+
+
+        <div class="table-wrapper">
+
+          <table class="items-table">
+
+            <thead>
+              <tr>
+                <th>Ürün ID</th>
+                <th>Miktar</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @for (shipmentItem of item.items; track shipmentItem.id) {
+                <tr>
+
+                  <td>
+                    <span class="product-code">
+                      {{ shipmentItem.productId }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <strong class="quantity-value">
+                      {{ shipmentItem.quantity }}
+                    </strong>
+                  </td>
+
+                </tr>
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <aside class="operation-panel">
+
+        <header class="panel-header compact">
+
+          <div>
+            <span class="panel-kicker">
+              OPERASYON
+            </span>
+
+            <h2>Sevkiyat Akışı</h2>
+          </div>
+
+        </header>
+
+
+        <div class="timeline">
+
+          <article
+            class="timeline-step"
+            [class.completed]="
+              item.status === CONFIRMED
+              || item.status === SHIPPED
+              || item.status === DELIVERED
+            ">
+
+            <span class="step-dot">1</span>
+
+            <div>
+              <strong>Planlama</strong>
+              <small>{{ item.plannedDate }}</small>
+            </div>
+
+          </article>
+
+
+          <article
+            class="timeline-step"
+            [class.completed]="
+              item.status === CONFIRMED
+              || item.status === SHIPPED
+              || item.status === DELIVERED
+            ">
+
+            <span class="step-dot">2</span>
+
+            <div>
+              <strong>Onay</strong>
+              <small>
+                {{ item.confirmedAt ?? 'Henüz onaylanmadı' }}
+              </small>
+            </div>
+
+          </article>
+
+
+          <article
+            class="timeline-step"
+            [class.completed]="
+              item.status === SHIPPED
+              || item.status === DELIVERED
+            ">
+
+            <span class="step-dot">3</span>
+
+            <div>
+              <strong>Yola Çıkış</strong>
+              <small>
+                {{ item.shippedAt ?? 'Henüz yola çıkmadı' }}
+              </small>
+            </div>
+
+          </article>
+
+
+          <article
+            class="timeline-step"
+            [class.completed]="item.status === DELIVERED">
+
+            <span class="step-dot">4</span>
+
+            <div>
+              <strong>Teslim</strong>
+              <small>
+                {{ item.deliveredAt ?? 'Henüz teslim edilmedi' }}
+              </small>
+            </div>
+
+          </article>
+
+        </div>
+
+
+        @if (item.note) {
+          <section class="note-card">
+            <span>SEVKİYAT NOTU</span>
+            <p>{{ item.note }}</p>
+          </section>
+        }
+
+
+        @if (item.status === PLANNED) {
+
+          <section class="action-card">
+
+            <span class="action-label">
+              KARAR BEKLİYOR
+            </span>
+
+            <strong>
+              Planlanan sevkiyat onay bekliyor
+            </strong>
+
+            <p>
+              Sevkiyatı onaylayabilir veya iptal edebilirsiniz.
+            </p>
+
+            <div class="action-buttons">
+
+              <button
+                type="button"
+                class="primary-action"
+                (click)="run(item.id, 'confirm')">
+
+                <span>✓</span>
+                Sevkiyatı Onayla
+
+              </button>
+
+              <button
+                type="button"
+                class="danger-action"
+                (click)="cancel(item.id)">
+
+                <span>×</span>
+                İptal Et
+
+              </button>
+
+            </div>
+
+          </section>
+
+        }
+
+
+        @if (item.status === CONFIRMED) {
+
+          <section class="action-card confirmed-card">
+
+            <span class="action-label">
+              ONAYLANDI
+            </span>
+
+            <strong>
+              Sevkiyat çıkışa hazır
+            </strong>
+
+            <p>
+              Fiziksel çıkış gerçekleştiğinde durumu güncelleyin.
+            </p>
+
+            <button
+              type="button"
+              class="primary-action full-button"
+              (click)="run(item.id, 'ship')">
+
+              <span>→</span>
+              Yola Çıkar
+
+            </button>
+
+          </section>
+
+        }
+
+
+        @if (item.status === SHIPPED) {
+
+          <section class="action-card shipped-card">
+
+            <span class="action-label">
+              YOLDA
+            </span>
+
+            <strong>
+              Sevkiyat teslimat sürecinde
+            </strong>
+
+            <p>
+              Teslim tamamlandığında durumu güncelleyin.
+            </p>
+
+            <button
+              type="button"
+              class="success-action full-button"
+              (click)="run(item.id, 'deliver')">
+
+              <span>✓</span>
+              Teslim Edildi
+
+            </button>
+
+          </section>
+
+        }
+
+
+        @if (item.status === DELIVERED) {
+
+          <section class="result-card delivered-result">
+            <span class="result-icon">✓</span>
+
+            <div>
+              <strong>Sevkiyat tamamlandı</strong>
+              <p>Teslimat başarıyla sonuçlandı.</p>
+            </div>
+          </section>
+
+        }
+
+
+        @if (item.status === CANCELLED) {
+
+          <section class="result-card cancelled-result">
+            <span class="result-icon">×</span>
+
+            <div>
+              <strong>Sevkiyat iptal edildi</strong>
+
+              <p>
+                {{
+                  item.cancellationReason
+                    ?? 'İptal nedeni belirtilmemiş.'
+                }}
+              </p>
+            </div>
+          </section>
+
+        }
+
+      </aside>
+
+    </section>
+
+  }
+
+</section>

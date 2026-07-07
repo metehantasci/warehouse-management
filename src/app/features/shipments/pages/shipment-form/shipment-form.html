@@ -1,0 +1,205 @@
+<section class="form-page">
+  <a
+    class="back"
+    routerLink="/sevkiyatlar">
+    ← Sevkiyatlara Dön
+  </a>
+
+  <section class="form-hero">
+    <span class="eyebrow">
+      DAĞITIM OPERASYONU
+    </span>
+
+    <h1>
+      Yeni Sevkiyat
+    </h1>
+
+    <p>
+      Teslimat bilgilerini ve ürün kalemlerini oluştur.
+    </p>
+  </section>
+
+  @if (facade.loading()) {
+    <div class="state-box">
+      Form verileri yükleniyor...
+    </div>
+  }
+
+  @if (
+    facade.error()
+    ||
+    submitError
+  ) {
+    <div class="state-box error">
+      {{
+        submitError
+        ?? facade.error()
+      }}
+    </div>
+  }
+
+  @if (!facade.loading()) {
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <div class="form-grid">
+        <label>
+          <span>Kaynak Depo *</span>
+
+          <select
+            formControlName="sourceWarehouseId">
+
+            @for (
+              item of facade.warehouses();
+              track item.id
+            ) {
+              <option [value]="item.id">
+                {{ item.code }} - {{ item.name }}
+              </option>
+            }
+
+          </select>
+        </label>
+
+        <label>
+          <span>Planlanan Tarih *</span>
+
+          <input
+            type="date"
+            formControlName="plannedDate">
+        </label>
+
+        <label class="full">
+          <span>Teslimat Noktası *</span>
+
+          <input
+            type="text"
+            formControlName="destinationName">
+        </label>
+
+        <label class="full">
+          <span>Teslimat Adresi *</span>
+
+          <textarea
+            formControlName="destinationAddress"
+            rows="4">
+          </textarea>
+        </label>
+
+        <label class="full">
+          <span>Not</span>
+
+          <textarea
+            formControlName="note"
+            rows="3">
+          </textarea>
+        </label>
+      </div>
+
+      <section class="items-section">
+        <div class="items-title">
+          <div>
+            <span class="section-label">
+              SEVKİYAT KALEMLERİ
+            </span>
+
+            <h2>
+              Ürünler
+            </h2>
+          </div>
+
+          <button
+            class="add-button"
+            type="button"
+            (click)="addItem()">
+            + Ürün Ekle
+          </button>
+        </div>
+
+        <div
+          class="shipment-items"
+          formArrayName="items">
+
+          @for (
+            item of items.controls;
+            track $index;
+            let index = $index
+          ) {
+            <div
+              class="shipment-item"
+              [formGroupName]="index">
+
+              <label>
+                <span>Ürün</span>
+
+                <select
+                  formControlName="productId">
+
+                  @for (
+                    product of facade.products();
+                    track product.id
+                  ) {
+                    <option
+                      [value]="product.id">
+
+                      {{ product.code }}
+                      -
+                      {{ product.name }}
+
+                    </option>
+                  }
+
+                </select>
+              </label>
+
+              <label>
+                <span>Miktar</span>
+
+                <input
+                  type="number"
+                  formControlName="quantity"
+                  min="1">
+              </label>
+
+              <button
+                class="remove-button"
+                type="button"
+                [disabled]="
+                  items.length <= 1
+                "
+                (click)="removeItem(index)">
+                Sil
+              </button>
+            </div>
+          }
+
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <a
+          class="secondary-button"
+          routerLink="/sevkiyatlar">
+          Vazgeç
+        </a>
+
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="
+            saving
+            ||
+            form.invalid
+          ">
+          {{
+            saving
+              ? 'Kaydediliyor...'
+              : 'Sevkiyatı Oluştur'
+          }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

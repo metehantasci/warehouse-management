@@ -1,0 +1,229 @@
+﻿import {
+  Component,
+  computed,
+  signal
+} from '@angular/core';
+
+
+type TransferStatus =
+  'Bekliyor'
+  | 'Yolda'
+  | 'Tamamlandı'
+  | 'İptal';
+
+
+interface TransferItem {
+
+  id: number;
+
+  code: string;
+
+  product: string;
+
+  sku: string;
+
+  quantity: number;
+
+  fromWarehouse: string;
+
+  toWarehouse: string;
+
+  status: TransferStatus;
+
+  createdAt: string;
+
+  estimatedDate: string;
+}
+
+
+@Component({
+  selector: 'app-transfers',
+  standalone: true,
+
+  imports: [],
+
+  templateUrl: './transfer-detail.html',
+  styleUrl: './transfer-detail.scss'
+})
+export class TransferDetail {
+
+  readonly searchTerm =
+    signal('');
+
+
+  readonly selectedStatus =
+    signal('Tümü');
+
+
+  readonly transfers:
+    TransferItem[] = [
+
+      {
+        id: 1,
+        code: 'TRF-2026-0018',
+        product: 'Lenovo ThinkPad E16',
+        sku: 'URN-1194',
+        quantity: 12,
+        fromWarehouse: 'Ankara Merkez',
+        toWarehouse: 'İzmir Bölge',
+        status: 'Yolda',
+        createdAt: '06.07.2026',
+        estimatedDate: '07.07.2026'
+      },
+
+      {
+        id: 2,
+        code: 'TRF-2026-0017',
+        product: 'TP-Link Archer AX55',
+        sku: 'URN-0574',
+        quantity: 10,
+        fromWarehouse: 'İstanbul Avrupa',
+        toWarehouse: 'Bursa Dağıtım',
+        status: 'Bekliyor',
+        createdAt: '06.07.2026',
+        estimatedDate: '08.07.2026'
+      },
+
+      {
+        id: 3,
+        code: 'TRF-2026-0016',
+        product: 'Samsung T7 SSD 2TB',
+        sku: 'URN-0342',
+        quantity: 18,
+        fromWarehouse: 'İzmir Bölge',
+        toWarehouse: 'Ankara Merkez',
+        status: 'Tamamlandı',
+        createdAt: '05.07.2026',
+        estimatedDate: '06.07.2026'
+      },
+
+      {
+        id: 4,
+        code: 'TRF-2026-0015',
+        product: 'Logitech MX Master 3S',
+        sku: 'URN-0872',
+        quantity: 8,
+        fromWarehouse: 'İstanbul Anadolu',
+        toWarehouse: 'Ankara Merkez',
+        status: 'Tamamlandı',
+        createdAt: '04.07.2026',
+        estimatedDate: '05.07.2026'
+      },
+
+      {
+        id: 5,
+        code: 'TRF-2026-0014',
+        product: 'HyperX Cloud III',
+        sku: 'URN-0811',
+        quantity: 14,
+        fromWarehouse: 'Ankara Merkez',
+        toWarehouse: 'Antalya Güney',
+        status: 'İptal',
+        createdAt: '03.07.2026',
+        estimatedDate: '05.07.2026'
+      },
+
+      {
+        id: 6,
+        code: 'TRF-2026-0013',
+        product: 'AMD Ryzen 7 9700X',
+        sku: 'URN-1310',
+        quantity: 6,
+        fromWarehouse: 'İstanbul Avrupa',
+        toWarehouse: 'Konya Operasyon',
+        status: 'Yolda',
+        createdAt: '03.07.2026',
+        estimatedDate: '07.07.2026'
+      }
+    ];
+
+
+  readonly filteredTransfers =
+    computed(() => {
+
+      const search =
+        this.searchTerm()
+          .trim()
+          .toLocaleLowerCase('tr-TR');
+
+
+      return this.transfers.filter(
+        transfer => {
+
+          const matchesSearch =
+            !search
+            ||
+            transfer.code
+              .toLocaleLowerCase('tr-TR')
+              .includes(search)
+            ||
+            transfer.product
+              .toLocaleLowerCase('tr-TR')
+              .includes(search)
+            ||
+            transfer.sku
+              .toLocaleLowerCase('tr-TR')
+              .includes(search);
+
+
+          const matchesStatus =
+            this.selectedStatus() === 'Tümü'
+            ||
+            transfer.status ===
+              this.selectedStatus();
+
+
+          return (
+            matchesSearch
+            &&
+            matchesStatus
+          );
+        }
+      );
+    });
+
+
+  statusCount(
+    status: TransferStatus
+  ): number {
+
+    return this.transfers.filter(
+      transfer =>
+        transfer.status === status
+    ).length;
+  }
+
+
+  onSearch(
+    event: Event
+  ): void {
+
+    this.searchTerm.set(
+      (
+        event.target
+        as HTMLInputElement
+      ).value
+    );
+  }
+
+
+  onStatusChange(
+    event: Event
+  ): void {
+
+    this.selectedStatus.set(
+      (
+        event.target
+        as HTMLSelectElement
+      ).value
+    );
+  }
+
+
+  clearFilters(): void {
+
+    this.searchTerm.set('');
+
+    this.selectedStatus.set('Tümü');
+  }
+}

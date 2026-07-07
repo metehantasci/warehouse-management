@@ -1,0 +1,70 @@
+<section class="detail-page">
+  <a class="back" routerLink="/stok-hareketleri">← Stok Hareketlerine Dön</a>
+
+  @if (loading()) {
+    <div class="state-box">Hareket yükleniyor...</div>
+  }
+
+  @if (error()) {
+    <div class="state-box error">{{ error() }}</div>
+  }
+
+  @if (movement(); as item) {
+    <section class="detail-hero">
+      <span class="eyebrow">{{ typeLabel(item.type) }}</span>
+      <h1>Stok Hareketi</h1>
+      <p>{{ item.reason }}</p>
+    </section>
+
+    <section class="detail-grid">
+      <article class="detail-card">
+        <span>Ürün</span>
+        <strong>{{ productName(item.productId) }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Depo</span>
+        <strong>{{ warehouseName(item.warehouseId) }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Hareket Tipi</span>
+        <strong>{{ typeLabel(item.type) }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Miktar</span>
+        <strong>{{ item.quantity }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Önceki Bakiye</span>
+        <strong>{{ item.previousBalance }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Yeni Bakiye</span>
+        <strong>{{ item.newBalance }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>İşlemi Yapan Rol</span>
+        <strong>{{ item.performedByRole }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Tarih</span>
+        <strong>{{ item.createdAt }}</strong>
+      </article>
+
+      <article class="detail-card">
+        <span>Durum</span>
+        <strong
+          [class.success-text]="!item.isCancelled"
+          [class.danger-text]="item.isCancelled">
+          {{ item.isCancelled ? 'İptal Edildi' : 'Aktif' }}
+        </strong>
+      </article>
+    </section>
+  }
+</section>

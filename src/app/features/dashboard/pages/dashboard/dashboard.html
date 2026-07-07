@@ -1,0 +1,38 @@
+<section class="page">
+  <section class="hero">
+    <div><span>WMS OPERASYON MERKEZİ</span><h1>Depo Yönetim Paneli</h1><p>Ürün, stok, depo, transfer ve sevkiyat durumlarını tek ekrandan takip et.</p></div>
+    <button type="button" (click)="dashboard.reload()">Yenile</button>
+  </section>
+
+  @if (dashboard.loading()) { <div class="state">Dashboard verileri hazırlanıyor...</div> }
+  @if (dashboard.error()) { <div class="state error">{{ dashboard.error() }}</div> }
+
+  @if (!dashboard.loading() && !dashboard.error()) {
+    <section class="stats">
+      <a routerLink="/urunler"><span>Aktif Ürün</span><strong>{{ formatNumber(dashboard.summary().activeProductCount) }}</strong></a>
+      <a routerLink="/stok-hareketleri"><span>Toplam Stok</span><strong>{{ formatNumber(dashboard.summary().totalStockQuantity) }}</strong></a>
+      <a routerLink="/kritik-stok"><span>Kritik Stok</span><strong>{{ formatNumber(dashboard.summary().lowStockCount) }}</strong></a>
+      <a routerLink="/depolar"><span>Aktif Depo</span><strong>{{ formatNumber(dashboard.summary().activeWarehouseCount) }}</strong></a>
+      <a routerLink="/transferler"><span>Bekleyen Transfer</span><strong>{{ formatNumber(dashboard.summary().pendingTransferCount) }}</strong></a>
+      <a routerLink="/sevkiyatlar"><span>Aktif Sevkiyat</span><strong>{{ formatNumber(dashboard.summary().activeShipmentCount) }}</strong></a>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <header><h2>Son Stok Hareketleri</h2><a routerLink="/stok-hareketleri">Tümünü Gör</a></header>
+        @if (dashboard.recentMovements().length === 0) { <div class="empty-state">Henüz stok hareketi bulunmuyor.</div> }
+        @for (m of dashboard.recentMovements(); track m.id) {
+          <div class="row"><div><strong>{{ m.type }}</strong><span>{{ m.productId }} · {{ m.warehouseId }}</span></div><aside><span>{{ m.createdAt }}</span><strong>{{ m.quantity }}</strong></aside></div>
+        }
+      </article>
+
+      <article class="panel">
+        <header><h2>Kritik Stoklar</h2><a routerLink="/kritik-stok">Tümünü Gör</a></header>
+        @if (dashboard.criticalItems().length === 0) { <div class="empty-state">Kritik stok bulunmuyor.</div> }
+        @for (item of dashboard.criticalItems(); track item.productId + item.warehouseId) {
+          <div class="row"><div><strong>{{ item.productName }}</strong><span>{{ item.productCode }} · {{ item.warehouseName }}</span></div><aside><span>{{ item.status }}</span><strong>{{ item.quantity }}</strong><small>Min: {{ item.minQuantity }}</small></aside></div>
+        }
+      </article>
+    </section>
+  }
+</section>

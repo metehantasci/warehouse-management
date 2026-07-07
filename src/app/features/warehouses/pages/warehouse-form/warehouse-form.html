@@ -1,0 +1,170 @@
+<section class="form-page">
+  <a
+    class="back"
+    routerLink="/depolar">
+    ← Depolara Dön
+  </a>
+
+  <section class="form-hero">
+    <span class="eyebrow">
+      LOJİSTİK AĞI
+    </span>
+
+    <h1>
+      {{
+        isEditMode
+          ? 'Depoyu Düzenle'
+          : 'Yeni Depo'
+      }}
+    </h1>
+
+    <p>
+      Depo bilgilerini doğrulanmış Reactive Form üzerinden kaydet.
+    </p>
+  </section>
+
+  @if (facade.isLoading()) {
+    <div class="state-box">
+      Depo yükleniyor...
+    </div>
+  }
+
+  @if (facade.error()) {
+    <div class="state-box error">
+      {{ facade.error() }}
+    </div>
+  }
+
+  @if (!facade.isLoading()) {
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <div class="form-grid">
+        <label>
+          <span>Depo Kodu *</span>
+
+          <input
+            type="text"
+            formControlName="code">
+
+          @if (fieldInvalid('code')) {
+            <small class="field-error">
+              Geçerli bir depo kodu girin.
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>Depo Adı *</span>
+
+          <input
+            type="text"
+            formControlName="name">
+
+          @if (fieldInvalid('name')) {
+            <small class="field-error">
+              Depo adı zorunludur.
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>Şehir *</span>
+
+          <input
+            type="text"
+            formControlName="city">
+
+          @if (fieldInvalid('city')) {
+            <small class="field-error">
+              Şehir zorunludur.
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>İlçe</span>
+
+          <input
+            type="text"
+            formControlName="district">
+        </label>
+
+        <label>
+          <span>Kapasite</span>
+
+          <input
+            type="number"
+            formControlName="capacity"
+            min="0">
+
+          @if (fieldInvalid('capacity')) {
+            <small class="field-error">
+              Kapasite negatif olamaz.
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>Sorumlu Personel</span>
+
+          <input
+            type="text"
+            formControlName="responsiblePerson">
+        </label>
+
+        <label>
+          <span>Telefon</span>
+
+          <input
+            type="text"
+            formControlName="phone">
+        </label>
+
+        <label class="full">
+          <span>Adres *</span>
+
+          <textarea
+            formControlName="address"
+            rows="5">
+          </textarea>
+
+          @if (fieldInvalid('address')) {
+            <small class="field-error">
+              En az 5 karakterlik adres girin.
+            </small>
+          }
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <a
+          class="secondary-button"
+          routerLink="/depolar">
+          Vazgeç
+        </a>
+
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="
+            saving
+            ||
+            form.invalid
+          ">
+          {{
+            saving
+              ? 'Kaydediliyor...'
+              : (
+                  isEditMode
+                    ? 'Değişiklikleri Kaydet'
+                    : 'Depoyu Oluştur'
+                )
+          }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

@@ -1,0 +1,6 @@
+<main class="login-page"><section class="brand"><div class="mark">W</div><span>WMS OPERASYON PLATFORMU</span><h1>Depo Yönetim Sistemi</h1><p>Ürün, stok, depo, transfer, sevkiyat ve audit süreçlerini rol bazlı tek panelden yönet.</p></section>
+<section class="login"><div class="card"><span>GÜVENLİ GİRİŞ</span><h2>Hesabınla devam et</h2><p>Demo hesaplardan birini seçebilir veya bilgileri elle girebilirsin.</p>
+@if(error()){<div class="error">{{error()}}</div>}
+<form [formGroup]="form" (ngSubmit)="submit()"><label><span>E-posta</span><input type="email" formControlName="email"></label><label><span>Şifre</span><input type="password" formControlName="password"></label><button type="submit" [disabled]="submitting()||form.invalid">{{submitting()?'Giriş yapılıyor...':'Giriş Yap'}}</button></form>
+<div class="demo"><small>Demo kullanıcılar</small>@for(a of demoAccounts;track a.email){<button type="button" (click)="useAccount(a)"><div><strong>{{a.name}}</strong><span>{{a.role}}</span></div><b>Giriş →</b></button>}</div>
+</div></section></main>

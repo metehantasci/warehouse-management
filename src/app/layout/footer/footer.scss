@@ -1,0 +1,111 @@
+﻿:host {
+  display: block;
+}
+
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 58px;
+
+  padding:
+    0 28px;
+
+  color:
+    #94a3b8;
+
+  font-size:
+    11px;
+
+  background:
+    #ffffff;
+
+  border-top:
+    1px solid #e8edf4;
+}
+
+
+.footer-left {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  min-width: 0;
+}
+
+
+.footer-left strong {
+  color:
+    #64748b;
+
+  font-weight:
+    700;
+}
+
+
+.separator {
+  color:
+    #cbd5e1;
+}
+
+
+.footer-right {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color:
+    #64748b;
+
+  font-weight:
+    600;
+}
+
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  background:
+    #22c55e;
+
+  border-radius:
+    50%;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(34, 197, 94, 0.1);
+}
+
+
+@media (max-width: 640px) {
+
+  .footer {
+    flex-direction: column;
+
+    align-items: flex-start;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 72px;
+
+    padding:
+      14px;
+  }
+
+
+  .footer-left {
+    flex-wrap: wrap;
+  }
+
+
+  .footer-right {
+    font-size:
+      10px;
+  }
+}

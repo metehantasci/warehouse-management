@@ -1,0 +1,210 @@
+<section class="page">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">
+        ENVANTER OPERASYONU
+      </span>
+
+      <h2>Stok Hareketleri</h2>
+
+      <p>
+        Giriş, çıkış, düzeltme ve transfer hareketleri gerçek stok kayıtlarından okunur.
+      </p>
+    </div>
+
+    <a
+      *appPermission="[
+        'DEPO_SORUMLUSU',
+        'OPERASYON_YONETICISI'
+      ]"
+      class="primary"
+      routerLink="yeni">
+      + Yeni Hareket
+    </a>
+  </section>
+
+  <section class="stats">
+    <article class="stat">
+      <span>Toplam Hareket</span>
+      <strong>{{ movements().length }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Giriş</span>
+      <strong>{{ countType('IN') }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Çıkış</span>
+      <strong>{{ countType('OUT') }}</strong>
+    </article>
+
+    <article class="stat">
+      <span>Filtre Sonucu</span>
+      <strong>{{ filtered().length }}</strong>
+    </article>
+  </section>
+
+  <section class="toolbar">
+    <input
+      type="text"
+      [value]="search()"
+      (input)="onSearch($event)">
+
+    <select
+      [value]="selectedType()"
+      (change)="onType($event)">
+      <option value="Tümü">
+        Tüm Tipler
+      </option>
+      <option value="IN">Giriş</option>
+      <option value="OUT">Çıkış</option>
+      <option value="ADJUSTMENT">
+        Düzeltme
+      </option>
+      <option value="TRANSFER_IN">
+        Transfer Giriş
+      </option>
+      <option value="TRANSFER_OUT">
+        Transfer Çıkış
+      </option>
+    </select>
+
+    <button
+      type="button"
+      (click)="load()">
+      Yenile
+    </button>
+  </section>
+
+  @if (loading()) {
+    <div class="loading">
+      Hareketler yükleniyor...
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error">
+      {{ error() }}
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length === 0
+  ) {
+    <div class="empty">
+      <strong>Hareket bulunamadı</strong>
+      <p>
+        Arama veya hareket tipi filtresini değiştirin.
+      </p>
+    </div>
+  }
+
+  @if (
+    !loading()
+    &&
+    !error()
+    &&
+    filtered().length > 0
+  ) {
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Hareket Kayıtları</h3>
+        <span>
+          {{ filtered().length }} kayıt
+        </span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ürün</th>
+              <th>Depo</th>
+              <th>Tip</th>
+              <th>Miktar</th>
+              <th>Önceki</th>
+              <th>Yeni Bakiye</th>
+              <th>Tarih</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (
+              movement of filtered();
+              track movement.id
+            ) {
+              <tr>
+                <td>
+                  <strong>
+                    {{
+                      productName(
+                        movement.productId
+                      )
+                    }}
+                  </strong>
+                </td>
+
+                <td>
+                  {{
+                    warehouseName(
+                      movement.warehouseId
+                    )
+                  }}
+                </td>
+
+                <td>
+                  <span
+                    class="badge"
+                    [class.green]="
+                      typeClass(
+                        movement.type
+                      ) === 'green'
+                    "
+                    [class.orange]="
+                      typeClass(
+                        movement.type
+                      ) === 'orange'
+                    ">
+                    {{
+                      typeLabel(
+                        movement.type
+                      )
+                    }}
+                  </span>
+                </td>
+
+                <td>{{ movement.quantity }}</td>
+                <td>{{ movement.previousBalance }}</td>
+
+                <td>
+                  <strong>
+                    {{ movement.newBalance }}
+                  </strong>
+                </td>
+
+                <td>{{ movement.createdAt }}</td>
+
+                <td>
+                  <div class="row-actions">
+                    <a
+                      [routerLink]="[
+                        movement.id
+                      ]">
+                      Detay
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</section>

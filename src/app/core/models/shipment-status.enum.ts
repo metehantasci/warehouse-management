@@ -1,0 +1,7 @@
+﻿export enum ShipmentStatus {
+  PLANNED = 'PLANNED',
+  CONFIRMED = 'CONFIRMED',
+  SHIPPED = 'SHIPPED',
+  DELIVERED = 'DELIVERED',
+  CANCELLED = 'CANCELLED'
+}

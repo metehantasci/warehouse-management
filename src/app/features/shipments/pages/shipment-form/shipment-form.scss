@@ -1,0 +1,269 @@
+:host {
+  display: block;
+}
+
+.form-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.back {
+  display: inline-flex;
+  margin-bottom: 16px;
+  color: #2563eb;
+  font-size: 10px;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.form-hero {
+  padding: 28px 30px;
+  color: #ffffff;
+  background: linear-gradient(
+    125deg,
+    #172554,
+    #1d4ed8 55%,
+    #7c3aed
+  );
+  border-radius: 20px;
+  box-shadow:
+    0 16px 40px
+    rgba(37, 99, 235, 0.16);
+}
+
+.eyebrow,
+.section-label {
+  display: block;
+  color: #bfdbfe;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+.form-hero h1 {
+  margin: 7px 0 0;
+  font-size: 30px;
+}
+
+.form-hero p {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.form-card {
+  margin-top: 20px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e8edf4;
+  border-radius: 18px;
+  box-shadow:
+    0 10px 30px
+    rgba(15, 23, 42, 0.04);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.form-grid label,
+.shipment-item label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.form-grid label.full {
+  grid-column: 1 / -1;
+}
+
+label > span {
+  color: #475569;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #dbe3ee;
+  border-radius: 10px;
+  outline: none;
+  color: #334155;
+  background: #f8fafc;
+  font: inherit;
+}
+
+input,
+select {
+  height: 42px;
+  padding: 0 12px;
+}
+
+textarea {
+  padding: 12px;
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #60a5fa;
+  box-shadow:
+    0 0 0 3px
+    rgba(59, 130, 246, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 22px;
+}
+
+.primary-button,
+.secondary-button,
+.add-button,
+.remove-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary-button {
+  color: #ffffff;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+.secondary-button {
+  color: #475569;
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+}
+
+.primary-button:disabled,
+.remove-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.state-box {
+  margin-top: 20px;
+  padding: 28px;
+  color: #64748b;
+  font-size: 10px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e8edf4;
+  border-radius: 15px;
+}
+
+.state-box.error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.items-section {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #eef2f7;
+}
+
+.items-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.items-title .section-label {
+  color: #2563eb;
+}
+
+.items-title h2 {
+  margin: 4px 0 0;
+  color: #0f172a;
+  font-size: 15px;
+}
+
+.add-button {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.shipment-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.shipment-item {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    140px
+    auto;
+  align-items: end;
+  gap: 10px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #e8edf4;
+  border-radius: 12px;
+}
+
+.remove-button {
+  min-height: 42px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+@media (max-width: 760px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid label.full {
+    grid-column: auto;
+  }
+
+  .shipment-item {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+  }
+}
+
+
+.field-error {
+  display: block;
+  margin-top: 5px;
+  color: #b91c1c;
+  font-size: 8px;
+  font-weight: 700;
+}
