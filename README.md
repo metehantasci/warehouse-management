@@ -1,163 +1,771 @@
-# Warehouse Management System — WMS Panel
+# 🏭 Warehouse Management System
 
-Angular tabanlı, rol bazlı yetkilendirme kullanan depo yönetim sistemi örneğidir. Ürün, depo, stok hareketi, transfer, sevkiyat, kritik stok, raporlama ve audit log süreçlerini tek panel altında birleştirir.
+Modern, responsive ve rol bazlı yetkilendirmeye sahip bir **Depo Yönetim Sistemi**.
 
-## Özellikler
+Bu proje; ürün, depo, stok hareketi, transfer, sevkiyat, kritik stok, raporlama ve audit log süreçlerini tek bir uygulama üzerinden yönetmek amacıyla **Angular 22** kullanılarak geliştirilmiştir.
 
-- Ürün ve depo CRUD akışı, soft delete
-- Stok giriş, çıkış ve bakiye düzeltme
-- Stok çıkışında mevcut bakiyeyi aşma kontrolü
-- Transfer talebi, onay, iptal, TRANSFER_OUT ve TRANSFER_IN hareketleri
-- Sevkiyat planlama, onaylama, yola çıkarma, teslim ve iptal
-- Sevkiyat öncesi yeterli stok doğrulaması
-- Kritik stok analizi
-- Dashboard ve raporlar
+---
+
+## 📌 Proje Özeti
+
+Warehouse Management System, gerçek bir depo operasyonunun temel süreçlerini simüle eden frontend tabanlı bir yönetim uygulamasıdır.
+
+Uygulama aşağıdaki operasyonları destekler:
+
+- Ürün yönetimi
+- Depo yönetimi
+- Stok giriş / çıkış / düzenleme işlemleri
+- Depolar arası transfer
+- Sevkiyat yönetimi
+- Kritik stok takibi
+- Raporlama
+- Audit log
+- Rol bazlı yetkilendirme
+- Bildirim merkezi
+- Form doğrulamaları
+- Responsive kullanıcı arayüzü
+
+Veriler bir backend sunucusu olmadan, **Mock API + localStorage** mimarisi üzerinden kalıcı olarak saklanır.
+
+---
+
+## 🚀 Kullanılan Teknolojiler
+
+- Angular 22
+- TypeScript
+- SCSS
+- Angular Standalone Components
+- Angular Signals
+- RxJS
+- Reactive Forms
+- Angular Router
+- Route Guards
+- Custom Directives
+- Custom Pipes
+- Mock API
+- localStorage
+- Unit Tests
+- Git
+- GitHub
+
+---
+
+## ✨ Temel Özellikler
+
+### 📊 Dashboard
+
+Dashboard ekranında sistemin genel operasyon özeti görüntülenir.
+
+Örnek bilgiler:
+
+- Toplam ürün sayısı
+- Aktif depo sayısı
+- Kritik stok sayısı
+- Transfer durumu
+- Sevkiyat özeti
+- Genel operasyon metrikleri
+
+---
+
+### 📦 Ürün Yönetimi
+
+Ürün modülü tam CRUD akışına sahiptir.
+
+Desteklenen işlemler:
+
+- Ürün listeleme
+- Ürün arama
+- Filtreleme
+- Sıralama
+- Sayfalama
+- Yeni ürün oluşturma
+- Ürün detay görüntüleme
+- Ürün düzenleme
+- Soft delete
+- Aktif ürünlerde benzersiz barkod kontrolü
+
+Ürün detay ekranında ayrıca:
+
+- Depo bazlı stok bakiyesi
+- Stok hareket geçmişi
+- Hareket timeline
+
+görüntülenebilir.
+
+---
+
+### 🏢 Depo Yönetimi
+
+Depo modülünde:
+
+- Depo listeleme
+- Yeni depo oluşturma
+- Depo detay görüntüleme
+- Depo düzenleme
+- Soft delete
+- Arama
+- Filtreleme
+- Sayfalama
+
+işlemleri desteklenir.
+
+---
+
+### 📈 Stok Hareketleri
+
+Desteklenen stok hareket tipleri:
+
+- `IN`
+- `OUT`
+- `ADJUSTMENT`
+- `TRANSFER_IN`
+- `TRANSFER_OUT`
+
+Stok hareketleri:
+
+- Ürün bazlı
+- Depo bazlı
+- Hareket tipi bazlı
+- Tarih aralığı bazlı
+
+filtrelenebilir.
+
+#### Kritik iş kuralı
+
+Bir stok çıkışı mevcut bakiyeyi aşamaz.
+
+```text
+Mevcut bakiye: 10
+Çıkış talebi: 15
+Sonuç: İşlem reddedilir
+```
+
+---
+
+### 🔄 Depolar Arası Transfer
+
+Transfer durumları:
+
+- `PENDING`
+- `APPROVED`
+- `CANCELLED`
+
+#### Transfer iş akışı
+
+1. Transfer oluşturulur.
+2. Kaynak depodan stok düşülür.
+3. Transfer `PENDING` durumuna geçer.
+4. Onaylanırsa hedef depoya stok eklenir.
+5. Bekleyen transfer iptal edilirse kaynak stok geri yüklenir.
+
+Bu yapı stok tutarsızlıklarını önlemek amacıyla tasarlanmıştır.
+
+---
+
+### 🚚 Sevkiyat Yönetimi
+
+Sevkiyat durumları:
+
+- `PLANNED`
+- `CONFIRMED`
+- `SHIPPED`
+- `DELIVERED`
+- `CANCELLED`
+
+#### Sevkiyat akışı
+
+```text
+Planlandı
+   ↓
+Onaylandı
+   ↓
+Yola Çıktı
+   ↓
+Teslim Edildi
+```
+
+Sevkiyat detay ekranında:
+
+- Sevkiyat kodu
+- Kaynak depo
+- Hedef bilgisi
+- Ürün kalemleri
+- Planlanan tarih
+- Süreç timeline
+- Durum bazlı aksiyonlar
+
+görüntülenebilir.
+
+Sevkiyat oluşturulmadan önce yeterli stok kontrolü yapılır.
+
+---
+
+### ⚠️ Kritik Stok Yönetimi
+
+Minimum stok seviyesinin altına düşen ürünler otomatik olarak kritik stok ekranında listelenir.
+
+Desteklenen stok durumları:
+
+- `NORMAL`
+- `LOW`
+- `CRITICAL`
+- `OUT_OF_STOCK`
+
+Kritik stok hesaplamaları stok hareketlerinden türetilir.
+
+---
+
+### 📑 Raporlar
+
+Raporlama modülü operasyon verilerinin analiz edilmesini sağlar.
+
+Örnek rapor alanları:
+
+- Ürün dağılımı
+- Stok hareketleri
+- Depo bazlı durum
+- Kritik stoklar
+- Operasyon özetleri
+
+---
+
+### 🧾 Audit Log
+
+Kritik işlemler kayıt altına alınır.
+
+Örnek audit aksiyonları:
+
+- `CREATE`
+- `UPDATE`
+- `DELETE`
+- `APPROVE`
+- `CANCEL`
+- `STATUS_CHANGE`
+- `STOCK_IN`
+- `STOCK_OUT`
+- `TRANSFER`
+- `SHIPMENT`
+- `LOGIN`
+- `EXPORT`
+
+Audit kayıtlarında aşağıdaki bilgiler tutulabilir:
+
+- Kullanıcı
+- Kullanıcı rolü
+- İşlem tipi
+- Varlık tipi
+- Varlık ID
+- Açıklama
+- Eski değer
+- Yeni değer
+- Tarih
+
+---
+
+## 🔐 Rol Bazlı Yetkilendirme
+
+Uygulamada üç kullanıcı rolü bulunur.
+
+### Operasyon Yöneticisi
+
+En yüksek yetkiye sahip roldür.
+
+Yetkiler:
+
+- Ürün CRUD
+- Depo CRUD
+- Stok hareketi oluşturma
+- Transfer oluşturma
+- Transfer onaylama
+- Transfer iptal etme
+- Sevkiyat oluşturma
+- Sevkiyat onaylama
+- Sevkiyat iptal etme
+- Rapor görüntüleme
+- Audit log görüntüleme
+
+---
+
+### Depo Sorumlusu
+
+Operasyonel işlemleri gerçekleştirebilir.
+
+Yetkiler:
+
+- Ürün CRUD
+- Depo CRUD
+- Stok hareketi oluşturma
+- Transfer talebi oluşturma
+- Sevkiyat planlama
+- Dashboard görüntüleme
+- Kritik stok görüntüleme
+
+---
+
+### Görüntüleyici
+
+Salt okunur role sahiptir.
+
+Yetkiler:
+
+- Dashboard görüntüleme
+- Ürünleri görüntüleme
+- Depoları görüntüleme
+- Stok hareketlerini görüntüleme
+- Transferleri görüntüleme
+- Sevkiyatları görüntüleme
+- Kritik stokları görüntüleme
+
+CRUD aksiyonları kullanıcı arayüzünde gizlenir.
+
+---
+
+## 👤 Demo Kullanıcılar
+
+Tüm demo kullanıcıların şifresi:
+
+```text
+123456
+```
+
+### Operasyon Yöneticisi
+
+```text
+E-posta: operasyon@wms.local
+Şifre: 123456
+```
+
+### Depo Sorumlusu
+
+```text
+E-posta: depo@wms.local
+Şifre: 123456
+```
+
+### Görüntüleyici
+
+```text
+E-posta: viewer@wms.local
+Şifre: 123456
+```
+
+---
+
+## 🛣️ Ana Rotalar
+
+```text
+/login
+/dashboard
+/urunler
+/urunler/yeni
+/urunler/:id
+/urunler/:id/edit
+/depolar
+/stok-hareketleri
+/transferler
+/sevkiyatlar
+/kritik-stok
+/raporlar
+/audit-log
+```
+
+Tanımsız rotalar özel 404 sayfasına yönlendirilir.
+
+---
+
+## 🧱 Mimari
+
+Proje feature-based mimari kullanır.
+
+Temel bağımlılık yönü:
+
+```text
+features
+   ↓
+shared
+   ↓
+core
+```
+
+### Core
+
+Singleton ve altyapı servisleri:
+
+- Auth
+- Storage
+- Mock DB
+- Mock API
 - Audit Log
-- Ürün detayında depo bazlı bakiye tablosu ve hareket timeline
-- Reactive Forms ve unsaved changes guard
-- Global Confirm Dialog
-- Route guard ve appPermission UI yetkilendirmesi
-- Mock API interceptor ve localStorage tabanlı demo veri katmanı
+- Notification
+- Loading
+- Confirm Dialog
+- Guards
+- Interceptors
+- Core modeller
 
-## Teknoloji
+### Shared
 
-Angular 22, TypeScript, Standalone Components, Signals, RxJS, Reactive Forms, Angular Router, SCSS ve Vitest.
+Tekrar kullanılabilir genel yapılar:
 
-## Kurulum ve Çalıştırma
+- Components
+- Directives
+- Pipes
+- Validators
+- Generic models
+
+### Features
+
+Dikey feature modülleri:
+
+- Auth
+- Dashboard
+- Products
+- Warehouses
+- Stock Movements
+- Transfers
+- Shipments
+- Critical Stock
+- Reports
+- Audit Log
+
+---
+
+## 📁 Proje Yapısı
+
+```text
+src/
+└── app/
+    ├── core/
+    │   ├── guards/
+    │   ├── interceptors/
+    │   ├── mock-api/
+    │   ├── models/
+    │   └── services/
+    │
+    ├── shared/
+    │   ├── components/
+    │   ├── directives/
+    │   ├── models/
+    │   ├── pipes/
+    │   └── validators/
+    │
+    ├── features/
+    │   ├── auth/
+    │   ├── dashboard/
+    │   ├── products/
+    │   ├── warehouses/
+    │   ├── stock-movements/
+    │   ├── transfers/
+    │   ├── shipments/
+    │   ├── critical-stock/
+    │   ├── reports/
+    │   └── audit-log/
+    │
+    ├── layout/
+    │   ├── header/
+    │   ├── sidebar/
+    │   ├── footer/
+    │   └── main-layout/
+    │
+    └── pages/
+        └── not-found/
+```
+
+---
+
+## 🌐 Mock API Yapısı
+
+Uygulama gerçek backend yerine Mock API kullanır.
+
+Örnek endpoint yapıları:
+
+```text
+/api/products
+/api/warehouses
+/api/stock-movements
+/api/transfers
+/api/shipments
+```
+
+Mock API interceptor gelen istekleri yakalar ve ilgili handler'a yönlendirir.
+
+Bu yapı sayesinde frontend katmanı gerçek backend'e geçişe uygun şekilde ayrıştırılmıştır.
+
+---
+
+## 💾 Veri Kalıcılığı
+
+Veriler `localStorage` üzerinde tutulur.
+
+Feature katmanları doğrudan `localStorage` kullanmaz.
+
+Persistence akışı:
+
+```text
+StorageService
+    ↓
+MockDbService
+    ↓
+Mock API Handlers
+```
+
+İlk çalıştırmada seed verileri otomatik oluşturulur.
+
+---
+
+## ♻️ Demo Verilerini Sıfırlama
+
+Tarayıcı Console ekranında:
+
+```javascript
+localStorage.clear();
+location.reload();
+```
+
+çalıştırıldığında demo verileri yeniden oluşturulur.
+
+> Bu işlem kullanıcı verilerini ve oturum bilgisini temizleyebilir.
+
+---
+
+## 🧮 Stok Hesaplama Yapısı
+
+`StockBalance` kalıcı olarak saklanmaz.
+
+Stok bakiyesi stok hareketlerinden hesaplanır.
+
+Benzer şekilde `InventoryQuery` yalnızca view model olarak kullanılır.
+
+Bu yaklaşım veri tutarsızlığını önlemeyi amaçlar.
+
+---
+
+## ✅ Kritik İş Kuralları
+
+1. Stok çıkışı mevcut bakiyeyi aşamaz.
+2. Transfer oluşturulduğunda kaynak stok düşer.
+3. Hedef stok yalnızca transfer onaylandığında artar.
+4. Bekleyen transfer iptal edilirse kaynak stok geri yüklenir.
+5. Minimum seviyenin altındaki ürünler kritik stok listesine girer.
+6. Silinen ürün geçmiş hareket kayıtlarında korunur.
+7. Yetersiz stok varsa sevkiyat oluşturulamaz.
+8. Aynı barkod iki aktif ürüne atanamaz.
+9. Kritik işlemler audit log üretir.
+10. `StockBalance` persist edilmez.
+11. `InventoryQuery` persist edilmez.
+12. Audit log duplicate kayıt üretmemelidir.
+
+---
+
+## 📝 Form Yapısı
+
+Formlar Angular Reactive Forms ile geliştirilmiştir.
+
+Kullanılan doğrulamalar:
+
+- Required validation
+- Minimum sayı
+- Pozitif sayı
+- Tarih aralığı
+- Koşullu required
+- Alan eşleşmesi
+- Unique active barcode
+- Stock out balance validation
+- Transfer source balance validation
+- Source / destination warehouse farklılığı
+- Shipment sufficient stock validation
+
+---
+
+## 🛡️ Guards
+
+Projede:
+
+- `authGuard`
+- `roleGuard`
+- `unsavedChangesGuard`
+
+kullanılır.
+
+### Unsaved Changes
+
+Form üzerinde kaydedilmemiş değişiklik varsa kullanıcı sayfadan ayrılmadan önce özel confirm dialog ile uyarılır.
+
+---
+
+## 🎨 Kullanıcı Deneyimi
+
+Uygulamada:
+
+- Loading state
+- Error state
+- Empty state
+- Toast notification
+- Confirm dialog
+- Notification center
+- Responsive layout
+- Debounced search
+- Pagination
+- Filtering
+- Sorting
+- 404 sayfası
+
+bulunur.
+
+---
+
+## 📱 Responsive Tasarım
+
+Arayüz farklı ekran boyutlarına uyum sağlayacak şekilde geliştirilmiştir.
+
+Responsive davranışlar:
+
+- Grid dönüşümleri
+- Mobil kart düzeni
+- Responsive form yapısı
+- Scroll destekli tablolar
+- Uyumlu sidebar
+- Responsive detay sayfaları
+
+---
+
+## 🧪 Testler
+
+Testleri çalıştırmak için:
+
+```bash
+npm test
+```
+
+veya:
+
+```bash
+npx ng test --watch=false
+```
+
+Projede özellikle aşağıdaki alanlar test edilir:
+
+- Stock balance query
+- Stock out validation
+- Shipment sufficient stock validation
+- Unique active barcode validation
+- Transfer workflow
+- Critical stock facade
+- Audit log
+- Role guard
+- Mock DB
+- Mock API seed
+- Transfer handlers
+- Shipment handlers
+
+---
+
+## 🛠️ Kurulum
+
+Projeyi klonlayın:
+
+```bash
+git clone https://github.com/metehantasci/warehouse-management.git
+```
+
+Proje klasörüne girin:
+
+```bash
+cd warehouse-management
+```
+
+Bağımlılıkları yükleyin:
 
 ```bash
 npm install
-npm run start
 ```
 
-Alternatif:
+Development server başlatın:
+
+```bash
+npm start
+```
+
+veya:
 
 ```bash
 ng serve
 ```
 
-Uygulama varsayılan olarak `http://localhost:4200` adresinde açılır.
+Tarayıcı:
 
-Production build:
+```text
+http://localhost:4200
+```
+
+---
+
+## 🏗️ Production Build
 
 ```bash
 ng build
 ```
 
-Testler:
+Build çıktısı `dist/` klasörü altında oluşturulur.
 
-```bash
-ng test --watch=false
-```
+---
 
-## Demo Kullanıcılar
+## 🔍 Kod Kalitesi
 
-### Depo Sorumlusu
+Proje aşağıdaki prensipler dikkate alınarak geliştirilmiştir:
 
-```text
-depo@wms.local
-123456
-```
+- Separation of concerns
+- Feature-based architecture
+- Reusable shared components
+- Service abstraction
+- Single responsibility
+- Route-level authorization
+- UI-level authorization
+- Derived stock calculations
+- Centralized persistence
+- Centralized audit logging
 
-Ürün/depo CRUD, stok hareketi oluşturma, transfer talebi oluşturma ve sevkiyat planlama yetkilerine sahiptir.
+---
 
-### Operasyon Yöneticisi
+## 📚 Öne Çıkan Angular Kullanımları
 
-```text
-operasyon@wms.local
-123456
-```
+- Standalone Components
+- Signals
+- Computed Signals
+- RxJS Observables
+- `debounceTime`
+- Reactive Forms
+- Lazy-loaded feature routes
+- Functional guards
+- Custom directives
+- Custom pipes
+- Interceptors
+- Dependency Injection
 
-Tüm operasyonel yetkilere, transfer/sevkiyat durum aksiyonlarına ve Audit Log erişimine sahiptir.
+---
 
-### Görüntüleyici
+## 🔗 Bağlantılar
 
-```text
-viewer@wms.local
-123456
-```
+### GitHub
 
-Salt okunur erişime sahiptir. Değişiklik yapan butonlar UI seviyesinde gizlenir; route ve API seviyesinde de yetkisiz işlemler engellenir.
+https://github.com/metehantasci/warehouse-management
 
-## Mimari
+### Canlı Demo
 
-Feature-based mimari kullanılır:
+Vercel deploy tamamlandıktan sonra canlı proje linki buraya eklenecektir.
 
-```text
-src/app/
-├── core/
-│   ├── guards/
-│   ├── interceptors/
-│   ├── mock-api/
-│   ├── models/
-│   └── services/
-├── shared/
-│   ├── components/
-│   ├── directives/
-│   ├── pipes/
-│   └── validators/
-├── features/
-│   ├── dashboard/
-│   ├── products/
-│   ├── warehouses/
-│   ├── stock-movements/
-│   ├── transfers/
-│   ├── shipments/
-│   ├── critical-stock/
-│   ├── reports/
-│   ├── audit-log/
-│   └── auth/
-├── layout/
-└── pages/
-```
+---
 
-`core` uygulama çapındaki AuthService, MockDbService, StorageService, AuditLogService, guard ve interceptor altyapısını taşır. `shared` feature bağımsız UI ve yardımcı parçaları içerir. `features` her iş alanını dikey dilim halinde tutar.
+## 👨‍💻 Geliştirici
 
-## Veri Akışı
+**Metehan Taşcı**
 
-```text
-Page
-  ↓
-Facade / Data Service
-  ↓
-HttpClient
-  ↓
-Mock API Interceptor
-  ↓
-Mock Handler
-  ↓
-MockDbService
-  ↓
-StorageService
-  ↓
-localStorage
-```
+Bilgisayar Programcılığı öğrencisi.
 
-Feature ekranları normal HTTP kontratıyla çalışır; mock backend ayrıntısını bilmez.
+Bu proje staj çalışması kapsamında geliştirilmiştir.
 
-## Yetkilendirme
+---
 
-İki seviyeli kontrol uygulanır:
+## 📄 Lisans
 
-1. Route seviyesi: `authGuard`, `roleGuard`
-2. UI seviyesi: `*appPermission`
-
-Mock API interceptor mutating request'lerde ayrıca rol kontrolü yapar.
-
-## Stok Mantığı
-
-Stok bakiyesi ayrı bir kalıcı koleksiyon değildir. `StockMovement` kayıtlarından hesaplanır. Desteklenen tipler `IN`, `OUT`, `ADJUSTMENT`, `TRANSFER_IN`, `TRANSFER_OUT` değerleridir. `StockBalanceQueryService` ürün + depo bazlı bakiye üretir.
-
-## Testler
-
-Test kapsamı StockBalanceQueryService, stockOutNotExceedingBalanceValidator, shipmentSufficientStockValidator, uniqueActiveBarcodeValidator, transfer workflow, CriticalStockFacadeService, AuditLogService ve roleGuard senaryolarını içerir.
-
-## Dağıtım
-
-```bash
-ng build
-```
-
-Çıktı klasörü `dist/warehouse-management` dizinidir.
-
-Bu proje eğitim ve staj çalışması amacıyla hazırlanmış, gerçek backend davranışını mock API ve tarayıcı depolamasıyla simüle eden bir frontend uygulamasıdır.
+Bu proje eğitim ve staj amaçlı geliştirilmiştir.
