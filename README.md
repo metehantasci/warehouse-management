@@ -752,7 +752,7 @@ https://github.com/metehantasci/warehouse-management
 
 ### Canlı Demo
 
-Vercel deploy tamamlandıktan sonra canlı proje linki buraya eklenecektir.
+https://warehouse-management-gules.vercel.app/audit-log
 
 ---
 
